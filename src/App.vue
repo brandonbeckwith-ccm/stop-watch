@@ -1,32 +1,40 @@
 <template>
   <div class="stopwatch-app">
-    <h1>My Stopwatch</h1>
+    <h1>Stopwatch Assignment</h1>
 
     <div class="time-display">{{ formattedTime }}</div>
 
     <div class="controls">
-      <CButton label="Start" @click="start" :disabled="isRunning"
-        >Start</CButton
-      >
-      <CButton label="Stop" @click="stop" :disabled="!isRunning">Stop</CButton>
       <CButton
+        :icon-class="isRunning ? 'fa-solid fa-stop' : 'fa-solid fa-play'"
+        icon-position="left"
+        :label="isRunning ? 'Stop' : 'Start'"
+        @click="isRunning ? stop() : start()"
+      />
+
+      <CButton
+        icon-class="fa-solid fa-rotate"
+        icon-position="left"
         label="Reset"
         @click="reset"
         :disabled="!elapsedTime && laps.length === 0"
-        >Reset</CButton
-      >
-      <CButton label="Lap" @click="recordLap" :disabled="!isRunning"
-        >Lap</CButton
-      >
+      />
+      <CButton
+        icon-class="fa-solid fa-flag"
+        icon-position="left"
+        label="Lap"
+        @click="recordLap"
+        :disabled="!isRunning"
+      />
     </div>
 
     <div v-if="laps.length" class="laps">
-        <h2>Laps</h2>
-        <ul>
-          <li v-for="(lap, index) in laps" :key="index">
-            Lap {{ index + 1 }} - {{ formatTime(lap) }}
-          </li>
-        </ul>
+      <h2>Laps</h2>
+      <ul>
+        <li v-for="(lap, index) in laps" :key="index">
+          Lap {{ index + 1 }} - {{ formatTime(lap) }}
+        </li>
+      </ul>
     </div>
   </div>
 </template>
@@ -57,7 +65,7 @@ function start() {
   isRunning.value = true;
   const startTime = Date.now() - elapsedTime.value;
 
-  intervalId.value = window.setInterval(() => {
+  intervalId.value = setInterval(() => {
     elapsedTime.value = Date.now() - startTime;
   }, 10);
 }
@@ -101,7 +109,9 @@ onUnmounted(() => {
   font-weight: bold;
 }
 
-.controls button {
+.controls {
+  display: flex;
+  justify-content: space-between;
   margin: 0 5px;
   padding: 10px 20px;
   font-size: 16px;
