@@ -28,19 +28,18 @@
       />
     </div>
 
-    <div v-if="laps.length" class="laps">
-      <h2>Laps</h2>
-      <ul>
-        <li v-for="(lap, index) in laps" :key="index">
-          Lap {{ index + 1 }} - {{ formatTime(lap) }}
-        </li>
-      </ul>
+    <CTag v-if="laps.length" class="laps" label="LAPS" size="medium-32" theme="primary" />
+    <div>
+      <div v-for="(lap, index) in laps" :key="index">
+        Lap {{ index + 1 }} - {{ formatTime(lap) }}
+        <hr/>
+      </div>
     </div>
   </div>
 </template>
 
 <script setup lang="ts">
-import { CButton } from "@ccm-engineering/ui-components";
+import { CButton, CTag } from "@ccm-engineering/ui-components";
 import { ref, computed, onUnmounted } from "vue";
 
 const isRunning = ref(false);
