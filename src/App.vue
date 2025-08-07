@@ -28,11 +28,17 @@
       />
     </div>
 
-    <CTag v-if="laps.length" class="laps" label="LAPS" size="medium-32" theme="primary" />
+    <CTag
+      v-if="laps.length"
+      class="laps"
+      label="LAPS"
+      size="medium-32"
+      theme="primary"
+    />
     <div>
       <div v-for="(lap, index) in laps" :key="index">
         Lap {{ index + 1 }} - {{ formatTime(lap) }}
-        <hr/>
+        <hr />
       </div>
     </div>
   </div>
@@ -40,52 +46,21 @@
 
 <script setup lang="ts">
 import { CButton, CTag } from "@ccm-engineering/ui-components";
-import { ref, computed, onUnmounted } from "vue";
+import { onUnmounted } from "vue";
+import { useStopWatchComposable } from "./composables/useStopWatch";
 
-const isRunning = ref(false);
-const elapsedTime = ref(0);
-const intervalId = ref<number>(0);
-const laps = ref<number[]>([]);
-
-const formattedTime = computed(() => formatTime(elapsedTime.value));
-
-function formatTime(ms: number): string {
-  const totalSeconds = Math.floor(ms / 1000);
-  const minutes = Math.floor(totalSeconds / 60);
-  const seconds = totalSeconds % 60;
-  const milliseconds = Math.floor((ms % 1000) / 10);
-
-  const pad = (n: number, z = 2) => n.toString().padStart(z, "0");
-  return `${pad(minutes)}:${pad(seconds)}:${pad(milliseconds)}`;
-}
-
-function start() {
-  if (isRunning.value) return;
-  isRunning.value = true;
-  const startTime = Date.now() - elapsedTime.value;
-
-  intervalId.value = setInterval(() => {
-    elapsedTime.value = Date.now() - startTime;
-  }, 10);
-}
-
-function stop() {
-  isRunning.value = false;
-  if (intervalId.value !== 0) {
-    clearInterval(intervalId.value);
-    intervalId.value = 0;
-  }
-}
-
-function reset() {
-  stop();
-  elapsedTime.value = 0;
-  laps.value = [];
-}
-
-function recordLap() {
-  laps.value.push(elapsedTime.value);
-}
+const {
+  isRunning,
+  elapsedTime,
+  intervalId,
+  laps,
+  formattedTime,
+  start,
+  stop,
+  reset,
+  recordLap,
+  formatTime,
+} = useStopWatchComposable();
 
 onUnmounted(() => {
   if (intervalId.value !== null) {
