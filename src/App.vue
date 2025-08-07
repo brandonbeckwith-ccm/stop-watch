@@ -1,227 +1,181 @@
 <script setup lang="ts">
-import { CButton, CTag } from '@ccm-engineering/ui-components'
-import { useStopwatch } from './composables/useStopwatch'
+import { CButton, CTag } from "@ccm-engineering/ui-components";
+import { useStopwatch } from "./composables";
+import { computed } from "vue";
+import Column from "primevue/column";
+import { CCMDataTable } from "@ccm-engineering/ccm-data-table";
 
-const {
-  isRunning,
-  formattedTime,
-  lapTimes,
-  reset,
-  lap,
-  toggle
-} = useStopwatch()
+const { start, laps, elapsed, stop, reset, formatTime, lap, isRunning } =
+  useStopwatch();
+
+function handleStart() {
+  start();
+}
+function handleLap() {
+  lap();
+}
+function handleStop() {
+  stop();
+}
+
+function handleReset() {
+  reset();
+}
+
+const formattedTime = computed(() => formatTime(elapsed.value));
 </script>
 
 <template>
   <div id="app">
     <div class="stopwatch-container">
-      <h1 class="stopwatch-title">Stopwatch</h1>
-      
-      <!-- Time Display -->
-      <div class="time-display">
-        <span class="time-text">{{ formattedTime }}</span>
+      <div class="header">
+        <h1>Stopwatch</h1>
       </div>
-
-      <!-- Control Buttons -->
-      <div class="control-buttons">
-        <CButton 
-          :theme="isRunning ? 'neutral' : 'primary'"
-          :label="isRunning ? 'Stop' : 'Start'"
-          @clicked="toggle"
-          class="control-button"
+      <CTag :label="formattedTime" size="medium-32" class="stopwatch-time" />
+      <div class="buttons">
+        <CButton
+          label="Start"
+          icon-class="fal fa-play"
+          class="btn start"
+          @clicked="handleStart"
+          :disabled="isRunning"
         />
-        
-        <CButton 
-          theme="neutral"
-          label="Reset"
-          :disabled="isRunning && lapTimes.length === 0"
-          @clicked="reset"
-          class="control-button"
+        <CButton
+          label="Stop"
+          icon-class="fal fa-stop"
+          class="btn stop"
+          @clicked="handleStop"
         />
-        
-        <CButton 
-          theme="primary"
+        <CButton
           label="Lap"
-          :disabled="!isRunning"
-          @clicked="lap"
-          class="control-button"
+          icon-class="fal fa-flag"
+          class="btn lap"
+          @clicked="handleLap"
+        />
+        <CButton
+          label="Reset"
+          icon-class="fal fa-xmark"
+          class="btn reset"
+          @clicked="handleReset"
+          type="border"
         />
       </div>
-
-      <!-- Lap Times -->
-      <div v-if="lapTimes.length > 0" class="lap-times">
-        <h3 class="lap-title">Lap Times</h3>
-        <div class="lap-list">
-          <div 
-            v-for="lap in lapTimes" 
-            :key="lap.id"
-            class="lap-item"
-          >
-            <CTag 
-              :label="`Lap ${lap.id}`"
-              theme="info"
-              size="small-24"
-            />
-            <span class="lap-time">{{ lap.displayTime }}</span>
-          </div>
-        </div>
-      </div>
-
-      <!-- Instructions -->
-      <div v-if="lapTimes.length === 0 && !isRunning" class="instructions">
-        <p>Click <strong>Start</strong> to begin timing</p>
-        <p>Use <strong>Lap</strong> to record lap times while running</p>
-        <p>Click <strong>Stop</strong> to pause, then <strong>Start</strong> to resume</p>
+      <div class="laps">
+        <h3 class="table-header">Laps</h3>
+        <CCMDataTable :value="laps">
+          <Column field="id" header="Lap Number" />
+          <Column field="timeStamp" header="Lap" />
+          <template #empty>
+            <span class="empty-message">No laps yet!</span>
+          </template>
+        </CCMDataTable>
       </div>
     </div>
   </div>
 </template>
 
-<style scoped>
+<style scoped lang="scss">
 .stopwatch-container {
-  max-width: 600px;
-}
-
-.stopwatch-title {
-  font-size: 2.5rem;
-  font-weight: 700;
-  color: var(--ccm-color-primary);
-  margin-bottom: 2rem;
+  display: flex;
+  flex-direction: column;
+  max-width: 400px;
+  margin: auto;
+  padding: 20px;
   text-align: center;
 }
 
-.time-display {
-  background: var(--ccm-color-surface);
-  border: 2px solid var(--ccm-color-border);
-  border-radius: 12px;
-  padding: 2rem;
-  margin-bottom: 2rem;
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+h1 {
+  font-weight: 650;
+  font-size: 1.5rem;
+  margin-top: 100px;
 }
 
-.time-text {
-  font-family: 'Courier New', monospace;
-  font-size: 3.5rem;
+.stopwatch-time {
+  font-size: 32px;
   font-weight: 700;
-  color: var(--ccm-color-text-primary);
-  letter-spacing: 2px;
+  border-radius: 9px;
+  width: 190px;
+  margin: 0 auto;
+  padding: 7px;
 }
 
-.control-buttons {
+.buttons {
+  display: flex;
+  gap: 13px;
+  justify-content: center;
+  margin: 30px 0 0 10px;
+}
+
+.btn {
+  padding: 7px;
+  width: 80px;
+  font-size: 11px;
+  border-radius: 9px;
+  border: none;
+  cursor: pointer;
+
+  &.start {
+    background-color: #14596e;
+    color: white;
+    border-radius: 999px;
+    padding: 10px 16px;
+    font-weight: 500;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+  }
+
+  &.stop {
+    background-color: #bd1f2d;
+    color: white;
+    border-radius: 999px;
+    padding: 10px 16px;
+    font-weight: 500;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+  }
+
+  &.lap {
+    background-color: #14596e;
+    color: white;
+    border-radius: 999px;
+    padding: 10px 16px;
+    font-weight: 500;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+  }
+
+  &.reset {
+    border-radius: 999px;
+    padding: 10px 16px;
+    font-weight: 500;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+  }
+}
+
+.laps {
+  margin-top: 20px;
+  text-align: left;
+}
+
+.table-header {
+  text-align: center;
+}
+
+.empty-message {
   display: flex;
   justify-content: center;
-  gap: 1rem;
-  margin-bottom: 2rem;
-  flex-wrap: wrap;
-}
-
-.control-button {
-  min-width: 100px;
-}
-
-.lap-times {
-  margin-top: 2rem;
-  text-align: left;
-}
-
-.lap-title {
-  font-size: 1.5rem;
-  font-weight: 600;
-  color: var(--ccm-color-text-primary);
-  margin-bottom: 1rem;
-  text-align: center;
-}
-
-.lap-list {
-  max-height: 300px;
-  overflow-y: auto;
-  border: 1px solid var(--ccm-color-border);
-  border-radius: 8px;
-  background: var(--ccm-color-surface);
-}
-
-.lap-item {
-  display: flex;
-  justify-content: space-between;
   align-items: center;
-  padding: 1rem;
-  border-bottom: 1px solid var(--ccm-color-border);
-  transition: background-color 0.2s ease;
-}
-
-.lap-item:last-child {
-  border-bottom: none;
-}
-
-.lap-item:hover {
-  background-color: var(--ccm-color-surface-hover);
-}
-
-.lap-time {
-  font-family: 'Courier New', monospace;
-  font-size: 1.1rem;
-  font-weight: 600;
-  color: var(--ccm-color-text-primary);
-}
-
-.instructions {
-  margin-top: 2rem;
-  padding: 1.5rem;
-  background: var(--ccm-color-surface);
-  border: 1px solid var(--ccm-color-border);
-  border-radius: 8px;
-  text-align: left;
-}
-
-.instructions p {
-  margin: 0.5rem 0;
-  color: var(--ccm-color-text-secondary);
-  font-size: 0.9rem;
-}
-
-.instructions strong {
-  color: var(--ccm-color-primary);
-  font-weight: 600;
-}
-
-/* Responsive Design */
-@media (max-width: 768px) {
-  .stopwatch-container {
-    padding: 1rem;
-  }
-  
-  .stopwatch-title {
-    font-size: 2rem;
-  }
-  
-  .time-text {
-    font-size: 2.5rem;
-  }
-  
-  .control-buttons {
-    flex-direction: column;
-    align-items: center;
-  }
-  
-  .control-button {
-    width: 200px;
-    margin-bottom: 0.5rem;
-  }
-  
-  .lap-item {
-    flex-direction: column;
-    gap: 0.5rem;
-    text-align: center;
-  }
-}
-
-@media (max-width: 480px) {
-  .time-text {
-    font-size: 2rem;
-  }
-  
-  .control-button {
-    width: 150px;
-  }
+  height: 10px;
+  font-style: italic;
+  color: #888;
 }
 </style>
