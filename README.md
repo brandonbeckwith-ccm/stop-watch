@@ -3,6 +3,7 @@
 Build a fully functional stopwatch application with the following features:
 
 ### Required Functionality
+
 - **Time Display**: Show elapsed time in `MM:SS:MS` format
 - **Start**: Begin timing
 - **Stop**: Pause timing (should be able to resume)
@@ -10,13 +11,14 @@ Build a fully functional stopwatch application with the following features:
 - **Lap**: Record lap times while the stopwatch is running
 
 ### Technical Requirements
+
 - Work on a branch formatted as `feature/<your_name>` and push it when you're done
 - Use Vue 3 Composition API with `<script setup>`
 - Implement proper TypeScript typing
 - **Use CCM internal UI components** from the installed libraries
 - Ensure the UI is responsive and user-friendly
 - All UI code should be contained in the App.vue.
-    - You should still use composables as needed
+  - You should still use composables as needed
 
 ## Getting Started
 
@@ -44,11 +46,13 @@ Add the following CCM internal packages to your project:
 ```
 
 ### 3. Install other dependencies:
+
 ```bash
 npm install
 ```
 
 ### 4. Start the development server:
+
 ```bash
 npm run dev
 ```
@@ -61,4 +65,4 @@ npm run dev
 - Handle edge cases (multiple starts, resets during timing, etc.)
 - Explore the CCM UI component libraries to see what components are available
 - Use CCM styling components for consistent design
-    - You will need to explore existing repos to understand how the imports should be structured
+  - You will need to explore existing repos to understand how the imports should be structured
