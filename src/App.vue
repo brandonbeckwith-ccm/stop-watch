@@ -1,12 +1,11 @@
 <script setup lang="ts">
+import StopWatch from "./components/StopWatch.vue";
 </script>
 
 <template>
   <div id="app">
-    <h1>Stopwatch Assignment</h1>
-    <p>Build your stopwatch here! Check the README.md for requirements.</p>
+    <StopWatch />
   </div>
 </template>
 
-<style>
-</style>
+<style></style>
