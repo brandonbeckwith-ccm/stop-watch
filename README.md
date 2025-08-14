@@ -42,7 +42,7 @@ Commit and push your changes.
 
 ## Final Step
 
-Once you've completed Tasks 2 and 3, raise a new PR from your `-merge-practice` branch against your original Day 1 branch (e.g., `feature/yourname-merge-practice` → `feature/yourname`). Take a moment to reflect and comment any observations or things you wish you did differently.
+Once you've completed Tasks 2 and 3, raise a new PR from your `-day-2` branch against your original Day 1 branch (e.g., `feature/yourname-day-2` → `feature/yourname`). Take a moment to reflect and comment any observations or things you wish you did differently.
 
 ## Development Setup
 
