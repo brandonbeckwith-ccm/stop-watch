@@ -1,25 +1,45 @@
+<script setup lang="ts">
+import { CButton, CIcon, CModal, CTabs } from "@ccm-engineering/ui-components";
+import { useStopWatch } from "../helpers";
+import Clock from "./Clock.vue";
+
+const {
+  start,
+  timeDisplay,
+  reset,
+  lap,
+  stop,
+  formatTime,
+  laps,
+  getTotal,
+  showModal,
+} = useStopWatch();
+</script>
 <template>
   <CModal
-  :modelValue="showModal"
-  horizontal-alignment="center"
-  vertical-alignment="center"
-  size="small"
-  :hideHeaderClose="false"
+    :modelValue="showModal"
+    horizontal-alignment="center"
+    vertical-alignment="center"
+    size="small"
+    :hideHeaderClose="false"
   >
-  <template #header>Are you sure you want to reset?</template>
-  <template #body>
-    <p class="sub-title">
-      Resting will remove the lap data as well
-    </p>
-  </template>
-  <template #footer>
-    <div class="action-button">
+    <template #header>Are you sure you want to reset?</template>
+    <template #body>
+      <p class="sub-title">Resting will remove the lap data as well</p>
+    </template>
+    <template #footer>
+      <div class="action-button">
+        <CButton label="Reset" theme="danger" type="border" @clicked="reset" />
+        <CButton
+          label="Cancel"
+          theme="black"
+          type="border"
+          @clicked="showModal = false"
+        />
+      </div>
+    </template>
+  </CModal>
 
-      <CButton label="Reset" theme="danger" type="border" @clicked="reset"/>
-      <CButton label="Cancel" theme="black" type="border" @clicked="showModal=false"/>
-    </div>
-  </template>
-</CModal>
   <div class="stop-watch-wrapper">
     <div class="card stop-watch-card">
       <div class="stop-watch-timmer">
@@ -28,40 +48,40 @@
       <div class="action-button">
         <CButton label="Start" theme="success" type="border" @clicked="start" />
         <CButton label="Stop" theme="danger" type="border" @clicked="stop" />
-        <CButton label="Reset" theme="black" type="border" @clicked="showModal=true" />
+        <CButton
+          label="Reset"
+          theme="black"
+          type="border"
+          @clicked="showModal = true"
+        />
         <CButton label="Lap" theme="black" type="border" @clicked="lap" />
       </div>
     </div>
-
     <div class="card laps-list">
       <div class="lap-header">
         <div>Lap</div>
         <div>LapTime</div>
         <div>Total Time</div>
       </div>
-      <hr>
+      <hr />
       <ul v-if="laps.length">
         <li v-for="(lap, index) in laps" :key="index">
           <div><CIcon icon="fa regular fa-flag"></CIcon>{{ index + 1 }}</div>
           <div><CIcon icon=""></CIcon>{{ formatTime(lap) }}</div>
-          <div>{{ getTotal(laps) }}</div> 
+          <div>{{ getTotal(laps) }}</div>
         </li>
       </ul>
     </div>
   </div>
+
 </template>
 
-<script setup lang="ts">
-import { CButton, CIcon ,CModal} from "@ccm-engineering/ui-components";
-import { useStopWatch } from "../helpers";
-const { start, timeDisplay, reset, lap, stop,formatTime,laps,getTotal,showModal } = useStopWatch();
-</script>
 <style scoped lang="scss">
-.sub-title
-{
-  color:gray;
+
+.sub-title {
+  color: gray;
 }
-.action-button{
+.action-button {
   display: flex;
   gap: 20px;
   justify-content: end;
@@ -71,8 +91,8 @@ const { start, timeDisplay, reset, lap, stop,formatTime,laps,getTotal,showModal 
   flex-wrap: wrap;
   gap: 2rem;
   padding: 2rem;
+  margin: 20px;
   justify-content: center;
-
   .card {
     background: #fff;
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
@@ -81,7 +101,6 @@ const { start, timeDisplay, reset, lap, stop,formatTime,laps,getTotal,showModal 
     flex: 1 1 300px;
     max-width: 500px;
   }
-
   .stop-watch-card {
     display: flex;
     flex-direction: column;
@@ -93,7 +112,6 @@ const { start, timeDisplay, reset, lap, stop,formatTime,laps,getTotal,showModal 
       font-weight: bold;
       margin-bottom: 1.5rem;
     }
-
     .action-button {
       display: flex;
       flex-wrap: wrap;
@@ -124,5 +142,4 @@ const { start, timeDisplay, reset, lap, stop,formatTime,laps,getTotal,showModal 
     }
   }
 }
-
 </style>
