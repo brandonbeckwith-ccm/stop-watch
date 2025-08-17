@@ -1,64 +1,72 @@
-import { ref, computed, onUnmounted } from 'vue'
-import { formatTime } from '../utils'
+import { ref } from "vue";
+import type { Lap } from "../types/stopWatch";
 
-export interface LapTime {
-  id: number
-  time: number
-  displayTime: string
-}
-
-export function useStopwatch() {
-  const isRunning = ref(false)
-  const elapsed = ref(0)
-  const laps = ref<LapTime[]>([])
-  const interval = ref<number | null>(null)
-  let lapId = 0
-
-  const formatted = computed(() => {
-    return formatTime(elapsed.value)
-  })
+export const useStopwatch = () => {
+  const startTime = ref<number>(0);
+  const elapsed = ref<number>(0);
+  const isRunning = ref<boolean>(false);
+  const laps = ref<Lap[]>([]);
+  const intervalId = ref<number | null>(null);
 
   const start = () => {
-    if (isRunning.value) return
-    isRunning.value = true
-    const startAt = Date.now() - elapsed.value
-    interval.value = setInterval(() => {
-      elapsed.value = Date.now() - startAt
-    }, 10)
-  }
+    if (!isRunning.value) {
+      startTime.value = Date.now() - elapsed.value;
+      intervalId.value = window.setInterval(() => {
+        elapsed.value = Date.now() - (startTime.value || 0);
+      }, 10);
+    }
+    isRunning.value = true;
+  };
 
   const stop = () => {
-    if (!isRunning.value) return
-    isRunning.value = false
-    if (interval.value) clearInterval(interval.value)
-    interval.value = null
-  }
+    if (isRunning.value && intervalId.value !== null) {
+      clearInterval(intervalId.value);
+      isRunning.value = false;
+      intervalId.value = null;
+    }
+  };
 
   const reset = () => {
-    stop()
-    elapsed.value = 0
-    laps.value = []
-    lapId = 0
-  }
+    if (intervalId.value !== null) {
+      clearInterval(intervalId.value);
+    }
+    laps.value = [];
+    intervalId.value = null;
+    startTime.value = 0;
+    elapsed.value = 0;
+    isRunning.value = false;
+  };
 
   const lap = () => {
-    if (!isRunning.value) return
-    laps.value.unshift({ id: ++lapId, time: elapsed.value, displayTime: formatted.value })
+    if (isRunning.value) {
+      const lapNumber=laps.value.length+1;
+      laps.value.push({
+        id: lapNumber,
+        timeStamp: formatTime(elapsed.value),
+      });
+    }
+  };
+
+  function formatTime(elaspedValue: number): string {
+    const minutes = Math.floor(elaspedValue / 60000);
+    const seconds = Math.floor((elaspedValue % 60000) / 1000);
+    const milliseconds = Math.floor((elaspedValue % 1000) / 10);
+
+    const mm = minutes.toString().padStart(2, "0");
+    const ss = seconds.toString().padStart(2, "0");
+    const msms = milliseconds.toString().padStart(2, "0");
+
+    return `${mm}:${ss}:${msms}`;
   }
 
-  const toggle = () => (isRunning.value ? stop() : start())
-
-  onUnmounted(() => interval.value && clearInterval(interval.value))
-
   return {
-    isRunning,
-    elapsedTime: elapsed,
-    formattedTime: formatted,
-    lapTimes: laps,
     start,
+    laps,
+    elapsed,
     stop,
     reset,
     lap,
-    toggle
-  }
-}
+    formatTime,
+    isRunning
+  };
+};

@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { CButton, CTag } from "@ccm-engineering/ui-components";
-import { useStopwatch } from "./composables";
+import { useStopwatch } from "./composables/useStopwatch";
 import { computed } from "vue";
 import Column from "primevue/column";
 import { CCMDataTable } from "@ccm-engineering/ccm-data-table";
@@ -8,17 +8,17 @@ import { CCMDataTable } from "@ccm-engineering/ccm-data-table";
 const { start, laps, elapsed, stop, reset, formatTime, lap, isRunning } =
   useStopwatch();
 
-function handleStart() {
+const handleStart=() =>{
   start();
 }
-function handleLap() {
+const handleLap=()=> {
   lap();
 }
-function handleStop() {
+const handleStop=()=> {
   stop();
 }
 
-function handleReset() {
+const handleReset=()=> {
   reset();
 }
 
