@@ -1,3 +1,4 @@
+
 <template>
   <div class="stopwatch-app">
     <h1>Stopwatch Assignment</h1>
