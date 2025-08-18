@@ -1,4 +1,3 @@
-
 <template>
   <div class="stopwatch-app">
     <h1>Stopwatch Assignment</h1>
@@ -41,6 +40,7 @@
         Lap {{ index + 1 }} - {{ formatTime(lap) }}
         <hr />
       </div>
+    </div>
   </div>
 </template>
 
