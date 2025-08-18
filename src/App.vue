@@ -1,27 +1,67 @@
+<script setup lang="ts">
+import { ref, onUnmounted } from "vue";
+import {
+  CButton,
+  CButtonDropdown,
+  CMultipleSelect,
+  CTag,
+} from "@ccm-engineering/ui-components";
+import { useStopWatchComposable } from "./composables/useStopWatch";
+import { useWorldClocks } from "./composables/useStopWatch";
+
+const currentView = ref<"stopwatch" | "laps" | "clocks">("stopwatch");
+
+const {
+  isRunning,
+  elapsedTime,
+  intervalId,
+  laps,
+  formattedTime,
+  start,
+  stop,
+  reset,
+  recordLap,
+  formatTime,
+} = useStopWatchComposable();
+
+const { clocks, newClock, addClock, removeClock, getTime, timezones } =
+  useWorldClocks();
+
+onUnmounted(() => {
+  if (intervalId.value !== null) {
+    clearInterval(intervalId.value);
+  }
+});
+</script>
+
 <template>
   <div class="app-container">
     <!-- Header Navigation -->
     <header class="app-header">
       <nav class="nav">
-        <button
+        <CButton
+          label="Stopwatch"
           class="nav-link"
           :class="{ active: currentView === 'stopwatch' }"
           @click="currentView = 'stopwatch'"
-        >
-          Stopwatch
-        </button>
-        <button
+        />
+        <CButton
+          label="Laps"
           class="nav-link"
           :class="{ active: currentView === 'laps' }"
           @click="currentView = 'laps'"
-        >
-          Laps
-        </button>
+        />
+        <CButton
+          label="World Clocks"
+          class="nav-link"
+          :class="{ active: currentView === 'clocks' }"
+          @click="currentView = 'clocks'"
+        />
       </nav>
     </header>
 
     <!-- Stopwatch View -->
-    <main v-if="currentView === 'stopwatch'" class="stopwatch-app">
+    <div v-if="currentView === 'stopwatch'" class="stopwatch-app">
       <h1>Stopwatch Assignment</h1>
 
       <div class="time-display">{{ formattedTime }}</div>
@@ -50,10 +90,10 @@
           :disabled="!isRunning"
         />
       </div>
-    </main>
+    </div>
 
     <!-- Laps View -->
-    <main v-else class="laps-view">
+    <div v-else-if="currentView === 'laps'" class="laps-view">
       <h2>Laps</h2>
 
       <CTag
@@ -72,46 +112,47 @@
       </div>
 
       <p v-else>No laps recorded yet.</p>
-    </main>
+    </div>
+
+    <!-- World Clocks View -->
+    <div v-else class="clocks-view">
+      <h2>World Clocks</h2>
+
+      <div class="clock-list">
+        <div v-for="(clock, index) in clocks" :key="clock" class="clock-item">
+          <span>{{ clock }}: {{ getTime(clock) }}</span>
+          <CButton
+            icon-class="fa-solid fa-xmark"
+            label="Remove"
+            icon-position="left"
+            size="size-32"
+            @click="removeClock(index)"
+          />
+        </div>
+      </div>
+
+      <div class="add-clock">
+        <select v-model="newClock" class="border rounded p-2">
+          <option disabled value="">Select a timezone</option>
+          <option v-for="tz in timezones" :key="tz" :value="tz">
+            {{ tz }}
+          </option>
+        </select>
+        <CButton label="Add Clock" @click="addClock" />
+      </div>
+    </div>
   </div>
 </template>
 
-<script setup lang="ts">
-import { ref, onUnmounted } from "vue";
-import { CButton, CTag } from "@ccm-engineering/ui-components";
-import { useStopWatchComposable } from "./composables/useStopWatch";
-
-const currentView = ref<"stopwatch" | "laps">("stopwatch");
-
-const {
-  isRunning,
-  elapsedTime,
-  intervalId,
-  laps,
-  formattedTime,
-  start,
-  stop,
-  reset,
-  recordLap,
-  formatTime,
-} = useStopWatchComposable();
-
-onUnmounted(() => {
-  if (intervalId.value !== null) {
-    clearInterval(intervalId.value);
-  }
-});
-</script>
-
 <style scoped>
 .app-container {
-  max-width: 600px;
+  max-width: 700px;
   margin: 0 auto;
   font-family: Arial, sans-serif;
 }
 
 .app-header {
-  background: #2c3e50;
+  background: #342c50;
   padding: 10px;
 }
 
@@ -119,6 +160,7 @@ onUnmounted(() => {
   display: flex;
   justify-content: center;
   gap: 20px;
+  flex-wrap: wrap;
 }
 
 .nav-link {
@@ -141,7 +183,8 @@ onUnmounted(() => {
 }
 
 .stopwatch-app,
-.laps-view {
+.laps-view,
+.clocks-view {
   padding: 20px;
   text-align: center;
 }
@@ -163,5 +206,31 @@ onUnmounted(() => {
 .lap-item {
   padding: 6px 0;
   border-bottom: 1px solid #ccc;
+}
+
+.clock-list {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-bottom: 20px;
+}
+
+.clock-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.add-clock {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  justify-content: center;
+}
+
+.add-clock input {
+  padding: 6px;
+  border: 1px solid #ccc;
+  border-radius: 6px;
 }
 </style>
