@@ -47,6 +47,15 @@ export const useStopWatchComposable = () => {
     }
 
     return {
-        formattedTime, start, stop, reset, recordLap, isRunning, elapsedTime, intervalId, laps, formatTime
-    }
-}
+        formattedTime,
+        start,
+        stop,
+        reset,
+        recordLap,
+        isRunning,
+        elapsedTime,
+        intervalId,
+        laps,
+        formatTime,
+    };
+};
