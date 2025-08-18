@@ -1,159 +1,126 @@
-<script setup>
-import { CButton } from "@ccm-engineering/ui-components";
-import { ref, computed, watch } from "vue";
-const startTime = ref(0);
-const updatedTime = ref(0);
-const difference = ref(0);
-const running = ref(false);
-const interval = ref(null);
-const laps = ref([]);
+<script setup lang="ts">
+import { CButton, CTag } from "@ccm-engineering/ui-components";
+import { computed, ref } from "vue";
 
-const toggleStartStop = () => {
-  if (!running.value) {
-    startTime.value = Date.now() - difference.value;
-    interval.value = setInterval(updateTime, 1);
-  } else {
-    clearInterval(interval.value);
-  }
-  running.value = !running.value;
-};
+const minutes = ref<number>(0);
+const seconds = ref<number>(0);
+const milliseconds = ref<number>(0);
+const timer = ref<number | null>(null);
+const isGoing = ref<boolean>(false);
+const laps = ref<string[]>([]);
 
-const updateTime = () => {
-  updatedTime.value = Date.now();
-  difference.value = updatedTime.value - startTime.value;
-};
-
-const formattedTime = computed(() => {
-  const minutes = Math.floor((difference.value / 1000 / 60) % 60);
-  const seconds = Math.floor((difference.value / 1000) % 60);
-  const milliseconds = Math.floor((difference.value % 1000) / 10);
-  return `${pad(minutes)}:${pad(seconds)}:${pad(milliseconds)}`;
+const currentTime = computed(() => {
+  const pad = (num: number, size = 2) => String(num).padStart(size, "0");
+  return `${pad(minutes.value)}:${pad(seconds.value)}:${pad(
+    Math.floor(milliseconds.value / 10)
+  )}`;
 });
 
-const pad = (time) => (time < 10 ? "0" + time : time);
+const start = (): void => {
+  if (isGoing.value) return;
+  isGoing.value = true;
 
-const resetTime = () => {
-  clearInterval(interval.value);
-  running.value = false;
-  difference.value = 0;
+  timer.value = window.setInterval(() => {
+    milliseconds.value += 10;
+    if (milliseconds.value >= 1000) {
+      milliseconds.value = 0;
+      seconds.value += 1;
+    }
+    if (seconds.value >= 60) {
+      seconds.value = 0;
+      minutes.value += 1;
+    }
+  }, 10);
+};
+
+const stop = (): void => {
+  if (timer.value !== null) {
+    clearInterval(timer.value);
+    timer.value = null;
+  }
+  isGoing.value = false;
+};
+
+const reset = (): void => {
+  stop();
+  minutes.value = 0;
+  seconds.value = 0;
+  milliseconds.value = 0;
   laps.value = [];
 };
 
-const recordLap = () => {
-  if (running.value) {
-    const lapTime = formattedTime.value;
-    laps.value.push(lapTime);
+const lap = (): void => {
+  if (isGoing.value) {
+    laps.value.push(currentTime.value);
   }
 };
-
-watch(running, (newVal) => {
-  if (!newVal) {
-    clearInterval(interval.value);
-  }
-});
 </script>
 
 <template>
-  <div class="stopwatch-container">
-    <div class="time-display">{{ formattedTime }}</div>
-    <div class="buttons">
-      <CButton
-        :label="running ? 'Stop' : 'Start'"
-        @click="toggleStartStop"
-        type="fill"
-        :icon-class="
-          running ? 'fa-solid fa-circle-stop' : 'fa-solid fa-circle-play'
-        "
-        icon-position="left"
-        :theme="running ? 'neutral' : 'success'"
-        size="size-40"
-      />
-      <CButton
-        type="fill"
-        icon-class="fa-solid fa-refresh"
-        icon-position="left"
-        theme="danger"
-        size="size-40"
-        label="Reset"
-        @click="resetTime"
-      />
-      <CButton
-        type="fill"
-        icon-class="fa-solid fa-timer"
-        icon-position="left"
-        theme="primary"
-        size="size-40"
-        label="Lap"
-        @click="recordLap"
-        :disabled="!running"
-      />
-    </div>
-    <div v-if="laps.length" class="lap-times">
-      <h3>Laps:</h3>
-      <ul>
-        <li v-for="(lap, index) in laps" :key="index">
-          <span class="lap-index">Lap - {{ index + 1 }}</span>
-          <span class="lap-time">{{ lap }}</span>
-        </li>
-      </ul>
-    </div>
+  <h1>{{ currentTime }}</h1>
+  <div class="btns">
+    <CButton
+      @clicked="start"
+      theme="success"
+      label="Start"
+      icon-class="fal fa-play"
+      icon-position="left"
+    />
+    <CButton
+      @clicked="stop"
+      theme="danger"
+      label="Stop"
+      icon-class="fal fa-pause"
+      icon-position="left"
+    />
+    <CButton
+      @clicked="reset"
+      theme="primary"
+      label="Reset"
+      icon-class="fal fa-refresh"
+      icon-position="left"
+    />
+    <CButton
+      @clicked="lap"
+      theme="black"
+      label="Lap"
+      icon-class="fal fa-flag-checkered"
+      icon-position="left"
+    />
+  </div>
+  <h2 v-if="laps.length > 0">Laps</h2>
+  <div class="laps">
+    <CTag
+      v-for="(lapTime, index) in laps"
+      :label="`Lap ${index} : ${lapTime}`"
+      :key="index"
+      size="medium-32"
+      theme="in-progress"
+    />
   </div>
 </template>
 
-<style scoped>
-.stopwatch-container {
+<style>
+h1 {
+  font-size: 3rem;
   text-align: center;
-  padding: 20px;
-  background-color: white;
-  border-radius: 10px;
-  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-  max-width: 500px;
-  margin: auto;
+  margin-top: 40px;
+  font-family: Arial, sans-serif;
+  color: #333;
 }
 
-.time-display {
-  font-size: 3em;
-  margin-bottom: 20px;
-}
-.buttons {
+.btns {
   display: flex;
-  flex-wrap: wrap;
   justify-content: center;
-  gap: 20px;
-}
-.lap-index,
-.lap-time {
-  background: #2f61c5;
-  font-weight: 500;
-  text-transform: uppercase;
-  width: 100px;
-  border-radius: 4px;
-}
-
-.lap-times {
+  gap: 1rem;
   margin-top: 20px;
 }
 
-ul {
+.laps {
   display: flex;
-  flex-wrap: wrap;
-  justify-content: center;
-  align-items: center;
   gap: 8px;
-  list-style-type: none;
-  padding: 0;
-}
-
-li {
-  display: flex;
-  flex-direction: column;
   justify-content: center;
   align-items: center;
-  gap: 10px;
-  padding: 8px;
-  background: #db8dd0;
-  border-radius: 8px;
-  font-size: 1.2em;
-  margin: 5px 0;
+  flex-wrap: wrap;
 }
 </style>
