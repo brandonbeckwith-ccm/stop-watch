@@ -1,3 +1,6 @@
+@import url("@ccm-engineering/ccm-common-style/styles/main.scss");
+@import url("@ccm-engineering/ui-components/dist/style.css");
+
 :root {
   font-family: system-ui, Avenir, Helvetica, Arial, sans-serif;
   line-height: 1.5;
@@ -32,6 +35,3 @@ body {
     background-color: #ffffff;
   }
 }
-
-@import "@ccm-engineering/ccm-common-style/styles/main.scss";
-@import "@ccm-engineering/ui-components/dist/style.css";
