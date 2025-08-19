@@ -57,7 +57,7 @@ const updateTimes = () => {
 };
 
 useIntervalFn(updateTimes, 1000);
-onMounted(updateTimes());
+onMounted(updateTimes);
 </script>
 
 <template>

@@ -5,7 +5,7 @@ import WorldClock from "../components/WorldClock.vue";
 
 const routes = [
   {
-    path: "/stopwatch",
+    path: "/",
     name: "Stopwatch",
     component: StopWatch,
   },
@@ -13,10 +13,6 @@ const routes = [
     path: "/world-clock",
     name: "WorldClock",
     component: WorldClock,
-  },
-  {
-    path: "/",
-    redirect: "/stopwatch",
   },
 ];
 
