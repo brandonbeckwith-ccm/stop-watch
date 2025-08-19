@@ -1,0 +1,107 @@
+.world-clocks {
+  max-width: 600px;
+  margin: 2rem auto;
+  padding: 1rem 2rem;
+  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+  color: #222;
+
+  h2 {
+    text-align: center;
+    margin-bottom: 1.5rem;
+    font-weight: 700;
+    font-size: 1.8rem;
+  }
+}
+
+.clocks-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-bottom: 1.5rem;
+  border: 1px solid #444;
+  border-radius: 6px;
+  overflow: hidden;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.1);
+
+  thead {
+    background-color: #f5f5f5;
+    color: #111;
+    font-weight: 600;
+    border-bottom: 2px solid #444;
+  }
+
+  th,
+  td {
+    padding: 0.75rem 1rem;
+    text-align: left;
+    border-bottom: 1px solid #ddd;
+  }
+
+  tbody tr:hover {
+    background-color: #fafafa;
+  }
+
+  td:last-child {
+    width: 100px;
+    text-align: center;
+  }
+}
+
+.add-clock {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 0.75rem;
+  max-width: 400px;
+  margin: 0 auto;
+
+  .c-input {
+    flex: 1 1 auto;
+    min-width: 0;
+  }
+
+  .c-button {
+    flex: 1 1 auto;
+    white-space: nowrap;
+  }
+}
+
+.error {
+  color: #b00020;
+  text-align: center;
+  margin-top: 0.8rem;
+  font-weight: 600;
+}
+
+@media (max-width: 768px) {
+  .world-clocks {
+    padding: 1rem;
+
+    .clocks-table {
+      font-size: 0.9rem;
+
+      th,
+      td {
+        padding: 0.5rem 0.75rem;
+      }
+
+      td:last-child {
+        width: 70px;
+      }
+    }
+
+    .add-clock {
+      flex-direction: column;
+      max-width: 100%;
+
+      .c-input,
+      .c-button {
+        flex: none;
+        width: 100%;
+      }
+
+      .c-button {
+        margin-top: 0.5rem;
+      }
+    }
+  }
+}
