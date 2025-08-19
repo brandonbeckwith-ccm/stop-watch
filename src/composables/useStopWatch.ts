@@ -1,13 +1,5 @@
-import { computed, onMounted, onUnmounted, ref } from "vue";
-import { useLocalStorage } from "@vueuse/core";
-import dayjs from "dayjs";
-import utc from "dayjs/plugin/utc";
-import timezone from "dayjs/plugin/timezone";
+import { computed, ref } from "vue";
 
-dayjs.extend(utc);
-dayjs.extend(timezone);
-
-// ------ Stopwatch -------
 export const useStopWatchComposable = () => {
     const isRunning = ref(false);
     const elapsedTime = ref(0);
@@ -48,7 +40,6 @@ export const useStopWatchComposable = () => {
     }
 
     function reset() {
-        if (isRunning.value) return
         stop();
         elapsedTime.value = 0;
         laps.value = [];
@@ -59,74 +50,6 @@ export const useStopWatchComposable = () => {
     }
 
     return {
-        formattedTime,
-        start,
-        stop,
-        reset,
-        recordLap,
-        isRunning,
-        elapsedTime,
-        intervalId,
-        laps,
-        formatTime,
-    };
-};
-
-// ---- World Clocks ----
-export const useWorldClocks = () => {
-    const browserTZ = Intl.DateTimeFormat().resolvedOptions().timeZone;
-    const defaultClocks = [browserTZ, "America/New_York", "Asia/Kolkata"];
-    const clocks = useLocalStorage<string[]>("world-clocks", defaultClocks);
-    const newClock = ref("");
-    const tick = ref(0);
-    const timezones = Intl.supportedValuesOf("timeZone");
-    let timer: number | undefined;
-
-
-    function addClock() {
-        const tz = newClock.value.trim();
-        if (!tz) return;
-
-        try {
-            // validate timezone
-            dayjs().tz(tz);
-            if (!clocks.value.includes(tz)) {
-                clocks.value.push(tz);
-            }
-            newClock.value = "";
-        } catch (e) {
-            alert(`Invalid timezone: ${tz}`);
-        }
+        formattedTime, start, stop, reset, recordLap, isRunning, elapsedTime, intervalId, laps, formatTime, isLapDisabled, isResetDisabled
     }
-
-    function removeClock(index: number) {
-        clocks.value.splice(index, 1);
-    }
-
-    function getTime(tz: string) {
-        try {
-            return dayjs().tz(tz).format("HH:mm:ss");
-        } catch (e) {
-            return "Invalid timezone";
-        }
-    }
-
-    onMounted(() => {
-        timer = setInterval(() => {
-            tick.value++;
-        }, 1000);
-    });
-
-    onUnmounted(() => {
-        if (timer) clearInterval(timer);
-    });
-
-    return {
-        clocks,
-        newClock,
-        addClock,
-        removeClock,
-        getTime,
-        timezones
-    };
-};
+}
