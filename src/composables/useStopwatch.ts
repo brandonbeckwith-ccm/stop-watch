@@ -1,64 +1,53 @@
-import { ref, computed, onUnmounted } from 'vue'
-import { formatTime } from '../utils'
+import { ref, computed } from "vue"
 
-export interface LapTime {
-  id: number
-  time: number
-  displayTime: string
+export type Lap = {
+    id: number,
+    timeString: string
 }
 
-export function useStopwatch() {
-  const isRunning = ref(false)
-  const elapsed = ref(0)
-  const laps = ref<LapTime[]>([])
-  const interval = ref<number | null>(null)
-  let lapId = 0
+export function useStopWatch() {
+    const time = ref<number>(0);
+    const interval = ref<number>(0);
+    const isRunning = ref<boolean>(false);
+    const laps = ref<Lap[]>([]);
 
-  const formatted = computed(() => {
-    return formatTime(elapsed.value)
-  })
+    const formatTime = computed<string>(() => {
+        const ms = (time.value % 1000).toString().padStart(2, '0').slice(0, 2);
+        const totalSeconds = Math.floor(time.value / 1000);
+        const seconds = (totalSeconds % 60).toString().padStart(2, '0');
+        const minutes = Math.floor(totalSeconds / 60).toString().padStart(2, '0');
 
-  const start = () => {
-    if (isRunning.value) return
-    isRunning.value = true
-    const startAt = Date.now() - elapsed.value
-    interval.value = setInterval(() => {
-      elapsed.value = Date.now() - startAt
-    }, 10)
-  }
+        return `${minutes} : ${seconds} : ${ms}`;
+    });
 
-  const stop = () => {
-    if (!isRunning.value) return
-    isRunning.value = false
-    if (interval.value) clearInterval(interval.value)
-    interval.value = null
-  }
+    const start = (): void => {
+        isRunning.value = true;
+        interval.value = setInterval(() => time.value += 10, 10)
+    };
 
-  const reset = () => {
-    stop()
-    elapsed.value = 0
-    laps.value = []
-    lapId = 0
-  }
+    const stop = (): void => {
+        isRunning.value = false;
+        clearInterval(interval.value);
+    };
 
-  const lap = () => {
-    if (!isRunning.value) return
-    laps.value.unshift({ id: ++lapId, time: elapsed.value, displayTime: formatted.value })
-  }
+    const reset = (): void => {
+        stop();
+        time.value = 0;
+        laps.value = [];
+    };
 
-  const toggle = () => (isRunning.value ? stop() : start())
+    const lap = (): void => {
+        laps.value.push({ id: laps.value.length + 1, timeString: formatTime.value });
+    };
 
-  onUnmounted(() => interval.value && clearInterval(interval.value))
-
-  return {
-    isRunning,
-    elapsedTime: elapsed,
-    formattedTime: formatted,
-    lapTimes: laps,
-    start,
-    stop,
-    reset,
-    lap,
-    toggle
-  }
+    return {
+        formatTime,
+        laps,
+        isRunning,
+        interval,
+        start,
+        stop,
+        reset,
+        lap
+    }
 }
