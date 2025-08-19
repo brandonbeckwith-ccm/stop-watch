@@ -1,3 +1,6 @@
+@import url("@ccm-engineering/ccm-common-style/styles/main.scss");
+@import url("@ccm-engineering/ui-components/dist/style.css");
+
 :root {
   font-family: system-ui, Avenir, Helvetica, Arial, sans-serif;
   line-height: 1.5;
@@ -11,21 +14,6 @@
   -moz-osx-font-smoothing: grayscale;
 }
 
-body {
-  margin: 0;
-  display: flex;
-  place-items: center;
-  min-width: 320px;
-  min-height: 100vh;
-}
-
-#app {
-  max-width: 1280px;
-  margin: 0 auto;
-  padding: 2rem;
-  text-align: center;
-}
-
 @media (prefers-color-scheme: light) {
   :root {
     color: #213547;
@@ -33,5 +21,3 @@ body {
   }
 }
 
-@import "@ccm-engineering/ccm-common-style/styles/main.scss";
-@import "@ccm-engineering/ui-components/dist/style.css";

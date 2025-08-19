@@ -104,7 +104,7 @@ watch(running, (newVal) => {
 .stopwatch-container {
   text-align: center;
   padding: 20px;
-  background-color: #403a3a;
+  /* background-color: #403a3a; */
   border-radius: 10px;
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
   max-width: 500px;
