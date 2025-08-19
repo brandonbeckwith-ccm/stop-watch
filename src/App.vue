@@ -1,11 +1,6 @@
 <script setup lang="ts">
 import { ref, onUnmounted } from "vue";
-import {
-  CButton,
-  CButtonDropdown,
-  CMultipleSelect,
-  CTag,
-} from "@ccm-engineering/ui-components";
+import { CButton, CTag } from "@ccm-engineering/ui-components";
 import { useStopWatchComposable } from "./composables/useStopWatch";
 import { useWorldClocks } from "./composables/useStopWatch";
 
