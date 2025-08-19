@@ -5,7 +5,7 @@ export type Lap = {
     timeString: string
 }
 
-export function useStopWatch() {
+export const useStopWatch = () => {
     const time = ref<number>(0);
     const interval = ref<number>(0);
     const isRunning = ref<boolean>(false);
