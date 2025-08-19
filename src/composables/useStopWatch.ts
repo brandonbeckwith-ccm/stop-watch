@@ -16,6 +16,9 @@ export const useStopWatchComposable = () => {
 
     const formattedTime = computed(() => formatTime(elapsedTime.value));
 
+    const isResetDisabled = computed(() => isRunning.value || elapsedTime.value === 0);
+    const isLapDisabled = computed(() => !isRunning.value || elapsedTime.value === 0);
+
     function formatTime(ms: number): string {
         const totalSeconds = Math.floor(ms / 1000);
         const minutes = Math.floor(totalSeconds / 60);
