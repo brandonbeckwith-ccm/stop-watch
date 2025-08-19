@@ -5,25 +5,22 @@ import { ref } from 'vue'
 const menuOpen = ref(false)
 const closeMenu = () => (menuOpen.value = false)
 </script>
+
 <template>
-    <header class="nav-bar">
-        <h1 class="logo">
-            <RouterLink to="/">My App</RouterLink>
-        </h1>
-
-        <div class="menu-btn">
-            <CButton @clicked="menuOpen = !menuOpen" label="☰">
-            </CButton>
-        </div>
-
-        <nav :class="['menu', { open: menuOpen }]">
-            <RouterLink to="/" class="menu-link" @click="closeMenu">Home</RouterLink>
-            <RouterLink to="/laps" class="menu-link" @click="closeMenu">Laps</RouterLink>
-        </nav>
-    </header>
+  <header class="flex" style="align-items:center; gap:32px; border-bottom:1px solid #ddd; padding:16px 0; background:#fff;">
+    <h1 style="margin:0;">
+      <RouterLink to="/" style="text-decoration:none; color:#213547; font-weight:bold; font-size:2rem;">My App</RouterLink>
+    </h1>
+    <div class="menu-btn" style="display:none;">
+      <CButton @clicked="menuOpen = !menuOpen" label="☰" />
+    </div>
+    <nav :class="['menu', { open: menuOpen }]" style="display:flex; gap:24px;">
+      <RouterLink to="/" class="menu-link" @click="closeMenu">Home</RouterLink>
+      <RouterLink to="/laps" class="menu-link" @click="closeMenu">Laps</RouterLink>
+      <RouterLink to="/world-clock" class="menu-link" @click="closeMenu">World Clock</RouterLink>
+    </nav>
+  </header>
 </template>
-
-
 
 <style scoped>
 .nav-bar {
@@ -35,8 +32,8 @@ const closeMenu = () => (menuOpen.value = false)
     gap: 50px;
     border-bottom: 1px solid #ddd;
     max-width: 600px;
-    width:100%;
-    position: relative; 
+    width: 100%;
+    position: relative;
 }
 
 .logo a {

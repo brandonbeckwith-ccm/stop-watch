@@ -11,7 +11,7 @@ const toggleAction = () => { isRunning.value ? stop() : start() }
 
 <template>
     <div>
-        <h1>Stopwatch Assignment</h1>
+        <!-- <h1>Stopwatch Assignment</h1> -->
 
         <div class="wrapper">
             <div class="box has-background-light left">

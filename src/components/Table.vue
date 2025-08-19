@@ -8,7 +8,6 @@ import { formatTime, laps } from '../helpers/stopwatch';
 
 <template>
     <div class="box mt-5 right">
-        <h2 class="subtitle is-4 has-text-grey-dark mb-3">Laps</h2>
         <CCMDataTable :value="laps" :resizableColumns="false">
             <template #empty> No laps recorded yet. </template>
             <Column field="lap" header="Lap" />
