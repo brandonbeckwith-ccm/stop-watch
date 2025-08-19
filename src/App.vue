@@ -10,3 +10,4 @@ import StopWatch from "./components/StopWatch.vue";
 </template>
 
 <style></style>
+<style></style>
