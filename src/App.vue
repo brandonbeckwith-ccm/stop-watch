@@ -1,13 +1,12 @@
 <script setup lang="ts">
-import Stopwatch from './components/Stopwatch.vue';
+import Navigation from "./constants/Navigation.vue";
 </script>
 
 <template>
   <div id="app">
-    <h1>Stopwatch Assignment</h1>
-    <Stopwatch />
+    <Navigation />
+    <RouterView></RouterView>
   </div>
 </template>
 
-<style>
-</style>
+<style></style>
