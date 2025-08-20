@@ -1,5 +1,5 @@
-import { ref, computed, onUnmounted } from 'vue'
-import { formatTime } from '../utils'
+import { ref, computed } from 'vue'
+import { formatTime } from '../utils/formatTime'
 
 export interface LapTime {
   id: number
@@ -47,8 +47,6 @@ export function useStopwatch() {
   }
 
   const toggle = () => (isRunning.value ? stop() : start())
-
-  onUnmounted(() => interval.value && clearInterval(interval.value))
 
   return {
     isRunning,
