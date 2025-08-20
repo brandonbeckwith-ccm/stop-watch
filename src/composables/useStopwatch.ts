@@ -26,7 +26,6 @@ const start = (): void => {
     elapsedTime.value += 10;
   }, 10);
 };
-
 const stop = (): void => {
   if (intervalId.value !== null) {
     clearInterval(intervalId.value);
