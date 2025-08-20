@@ -10,6 +10,7 @@ const route = useRoute();
 const tabArray: TabItem[] = [
   { label: "StopWatch", value: "stopwatch", icon: "fal fa-stopwatch" },
   { label: "World Clock", value: "world-clock", icon: "fal fa-clock" },
+  { label: "Custom Ref", value: "custom-ref", icon: "" },
 ];
 
 const selectedTab = ref("stopwatch");
