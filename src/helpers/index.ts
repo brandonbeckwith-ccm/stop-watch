@@ -11,6 +11,11 @@ export const tabs = [
         label: 'WorldClock',
         value: 'worldClock',
         icon: 'fa-light fa-clock'
+    },
+    {
+        label: 'Custom Ref',
+        value: 'customRef',
+        icon: 'fa-light fa-code'
     }
 ]
 export const localTz = Intl.DateTimeFormat().resolvedOptions().timeZone

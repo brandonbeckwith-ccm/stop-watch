@@ -2,6 +2,11 @@
 import { CButton, CIcon, CModal, CTabs } from "@ccm-engineering/ui-components";
 import { useStopWatch } from "../helpers";
 import Clock from "./Clock.vue";
+import { useDebouncedRef,useValidatedRef, useHistoryRef, useThrottledRef } from '../helpers/customRef'
+// const debouncedInput = useDebouncedRef("", 500)
+// const validatedInput = useValidatedRef("", (v) => v.length >= 3)
+// const historyInput = useHistoryRef("", 5)
+// const throttledInput = useThrottledRef("", 1000)
 
 const {
   start,
@@ -73,6 +78,22 @@ const {
       </ul>
     </div>
   </div>
+  <!-- <div>
+    <input v-model="debouncedInput" placeholder="Type to search..." />
+    <p>Debounced value: {{ debouncedInput }}</p>
+  </div>
+  <div>
+    <input v-model="validatedInput" placeholder="Type to search..." />
+    <p>Debounced value: {{ validatedInput }}</p>
+  </div>
+  <div>
+    <input v-model="historyInput" placeholder="Type to search..." />
+    <p>Debounced value: {{ historyInput }}</p>
+  </div>
+  <div>
+    <input v-model="throttledInput" placeholder="Type to search..." />
+    <p>Debounced value: {{ throttledInput }}</p>
+  </div> -->
 
 </template>
 

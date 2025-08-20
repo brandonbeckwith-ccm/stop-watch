@@ -3,6 +3,7 @@ import { CTabs } from '@ccm-engineering/ui-components';
 import StopWatch from './custom-component/StopWatch.vue';
 import WorldClock from './custom-component/WorldClock.vue';
 import { tabs } from './helpers';
+import RefPanel from './custom-component/RefPanel.vue';
 
 </script>
 
@@ -20,6 +21,9 @@ import { tabs } from './helpers';
         </div>
         <div v-if="activeValue == 'worldClock'">
          <WorldClock></WorldClock>
+        </div>
+        <div v-if="activeValue =='customRef'">
+          <RefPanel></RefPanel>
         </div>
       </template>
     </CTabs>
