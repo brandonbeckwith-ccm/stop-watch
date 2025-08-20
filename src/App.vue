@@ -1,7 +1,6 @@
 <script setup lang="ts">
-
 import { ref, onUnmounted } from "vue";
-import { CButton, CTag } from "@ccm-engineering/ui-components";
+import { CButton, CMultipleSelect, CTag } from "@ccm-engineering/ui-components";
 import { useStopWatchComposable } from "./composables/useStopWatch";
 import { useWorldClocks } from "./composables/useStopWatch";
 
@@ -20,9 +19,16 @@ const {
   formatTime,
 } = useStopWatchComposable();
 
-const { clocks, newClock, addClock, removeClock, getTime, timezones } =
-  useWorldClocks();
-
+const {
+  clocks,
+  addClock,
+  removeClock,
+  getTime,
+  validatedClock,
+  undo,
+  redo,
+  filteredTimezones,
+} = useWorldClocks();
 
 onUnmounted(() => {
   if (intervalId.value !== null) {
@@ -129,13 +135,17 @@ onUnmounted(() => {
       </div>
 
       <div class="add-clock">
-        <select v-model="newClock" class="border rounded p-2">
-          <option disabled value="">Select a timezone</option>
-          <option v-for="tz in timezones" :key="tz" :value="tz">
-            {{ tz }}
-          </option>
-        </select>
-        <CButton label="Add Clock" @click="addClock" />
+        <CMultipleSelect
+          v-model="validatedClock"
+          :options="filteredTimezones"
+          mode="single"
+          placeholder="Search or select timezone..."
+        />
+        <div>
+          <CButton label="Add Clock" @click="addClock" />
+          <CButton label="Undo" @click="undo" />
+          <CButton label="Redo" @click="redo" />
+        </div>
       </div>
     </div>
   </div>

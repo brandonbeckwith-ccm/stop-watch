@@ -1,8 +1,13 @@
-import { computed, onMounted, onUnmounted, ref } from "vue";
+import { computed, onMounted, onUnmounted, ref, watch } from "vue";
 import { useLocalStorage } from "@vueuse/core";
 import dayjs from "dayjs";
 import utc from "dayjs/plugin/utc";
 import timezone from "dayjs/plugin/timezone";
+import {
+    useDebouncedRef,
+    useValidatedRef,
+    useHistoryRef,
+} from "../customRefs";
 
 dayjs.extend(utc);
 dayjs.extend(timezone);
@@ -15,9 +20,6 @@ export const useStopWatchComposable = () => {
     const laps = ref<number[]>([]);
 
     const formattedTime = computed(() => formatTime(elapsedTime.value));
-
-    const isResetDisabled = computed(() => isRunning.value || elapsedTime.value === 0);
-    const isLapDisabled = computed(() => !isRunning.value || elapsedTime.value === 0);
 
     function formatTime(ms: number): string {
         const totalSeconds = Math.floor(ms / 1000);
@@ -77,26 +79,55 @@ export const useWorldClocks = () => {
     const browserTZ = Intl.DateTimeFormat().resolvedOptions().timeZone;
     const defaultClocks = [browserTZ, "America/New_York", "Asia/Kolkata"];
     const clocks = useLocalStorage<string[]>("world-clocks", defaultClocks);
-    const newClock = ref("");
-    const tick = ref(0);
-    const timezones = Intl.supportedValuesOf("timeZone");
-    let timer: number | undefined;
 
+    const allTimezones = Intl.supportedValuesOf("timeZone");
 
+    // --- Debounced + Validated ---
+    const debouncedClock = useDebouncedRef("", 500);
+    const validatedClock = useValidatedRef("", (tz: string) =>
+        allTimezones.includes(tz)
+    );
+
+    // --- History (Undo/Redo) ---
+    const { ref: historyClock, undo, redo, history } = useHistoryRef("");
+
+    watch(historyClock, (val, oldVal) => {
+        // If undo: remove last clock
+        if (val === "" && oldVal) {
+            clocks.value.pop();
+        }
+        // If redo: add last clock back
+        else if (val && !clocks.value.includes(val)) {
+            clocks.value.push(val);
+        }
+    });
+
+    // Sync debounced -> validated -> history
+    watch(debouncedClock, (val) => {
+        validatedClock.value = val;
+    });
+
+    watch(validatedClock, (val) => {
+        if (val) historyClock.value = val;
+    });
+
+    // --- Filtering ---
+    const filteredTimezones = computed(() => {
+        if (!debouncedClock.value) return allTimezones;
+        return allTimezones.filter((tz) =>
+            tz.toLowerCase().includes(debouncedClock.value.toLowerCase())
+        );
+    });
+
+    // --- Add/Remove ---
     function addClock() {
-        const tz = newClock.value.trim();
+        const tz = validatedClock.value.trim();
         if (!tz) return;
 
-        try {
-            // validate timezone
-            dayjs().tz(tz);
-            if (!clocks.value.includes(tz)) {
-                clocks.value.push(tz);
-            }
-            newClock.value = "";
-        } catch (e) {
-            alert(`Invalid timezone: ${tz}`);
+        if (!clocks.value.includes(tz)) {
+            clocks.value.push(tz);
         }
+        validatedClock.value = "";
     }
 
     function removeClock(index: number) {
@@ -104,29 +135,20 @@ export const useWorldClocks = () => {
     }
 
     function getTime(tz: string) {
-        try {
-            return dayjs().tz(tz).format("HH:mm:ss");
-        } catch (e) {
-            return "Invalid timezone";
-        }
+        return dayjs().tz(tz).format("HH:mm:ss");
     }
-
-    onMounted(() => {
-        timer = setInterval(() => {
-            tick.value++;
-        }, 1000);
-    });
-
-    onUnmounted(() => {
-        if (timer) clearInterval(timer);
-    });
 
     return {
         clocks,
-        newClock,
+        validatedClock,
+        filteredTimezones,
         addClock,
         removeClock,
         getTime,
-        timezones
+        undo,
+        redo,
+        historyClock,
+        history,
     };
 };
+
