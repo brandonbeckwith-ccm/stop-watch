@@ -1,47 +1,52 @@
 <script setup lang="ts">
-import { CTabs } from "@ccm-engineering/ui-components";
-import Stopwatch from "./custom-component/Stopwatch.vue";
-import WorldClock from "./custom-component/WorldClock.vue";
-import CustomRef from "./custom-component/CustomRef.vue";
+import { CButton, CTag } from "@ccm-engineering/ui-components";
+import { useStopwatch } from "./composables/useStopWatch";
 
-const tabs = [
-  {
-    label: "Stop Watch",
-    value: "stopWatch",
-    icon: "fal fa-stopwatch",
-  },
-  {
-    label: "WorldClock",
-    value: "worldClock",
-    icon: "fa-light fa-clock",
-  },
-  {
-    label: "Custom Ref",
-    value: "customRef",
-    icon: "fal fa-code",
-  },
-];
+const { start, stop, reset, lap, formattedTime, formattedLaps, running } =
+  useStopwatch();
 </script>
-
 <template>
   <div id="app">
-    <CTabs
-      selected="stopWatch"
-      theme="sky-blue"
-      :tabs="tabs"
-      :full-width="true"
-    >
-      <template #tab="{ activeValue }">
-        <div v-if="activeValue == 'stopWatch'">
-          <Stopwatch />
-        </div>
-        <div v-if="activeValue == 'worldClock'">
-          <WorldClock />
-        </div>
-        <div v-if="activeValue == 'customRef'">
-          <CustomRef />
-        </div>
-      </template>
-    </CTabs>
+    <h1>Stopwatch Assignment</h1>
+
+    <div class="stopwatch">
+      <h1>{{ formattedTime }}</h1>
+
+      <div class="controls">
+        <CButton label="Start" v-if="!running" @click="start" />
+        <CButton label="Stop" v-if="running" @click="stop" />
+        <CButton label="Reset" @click="reset" />
+        <CButton label="Lap" :disabled="!running" @click="lap" />
+      </div>
+
+      <div class="laps" v-if="formattedLaps.length">
+        <h2>Laps</h2>
+        <ul>
+          <li v-for="(lap, index) in formattedLaps" :key="index">
+            <CTag :label="`Lap ${index + 1}: ${lap}`" />
+          </li>
+        </ul>
+      </div>
+    </div>
   </div>
 </template>
+
+<style scoped>
+.stopwatch {
+  max-width: 400px;
+  margin: auto;
+  text-align: center;
+  padding: 1rem;
+}
+.controls {
+  display: flex;
+  justify-content: center;
+  gap: 0.5rem;
+  margin-top: 1rem;
+  flex-wrap: wrap;
+}
+.laps {
+  margin-top: 2rem;
+  text-align: left;
+}
+</style>

@@ -1,52 +1,64 @@
-# Day 2: Git Merge Practice & Feature Development
+# Stopwatch Assignment
 
-## Task 1: Git Conflict Resolution
+Build a fully functional stopwatch application with the following features:
 
-Find your assigned PR (one of PRs #15-26) where someone else's branch merges into your `-merge-practice` branch.
+### Required Functionality
+- **Time Display**: Show elapsed time in `MM:SS:MS` format
+- **Start**: Begin timing
+- **Stop**: Pause timing (should be able to resume)
+- **Reset**: Reset timer to 00:00:00
+- **Lap**: Record lap times while the stopwatch is running
 
-**Your options for resolving conflicts:**
-- **Merge commit**: Standard merge with merge commit
-- **Rebase**: Replay commits to create linear history  
-- **Squash merge**: Combine all commits into single commit
+### Technical Requirements
+- Work on a branch formatted as `feature/<your_name>` and push it when you're done
+- Use Vue 3 Composition API with `<script setup>`
+- Implement proper TypeScript typing
+- **Use CCM internal UI components** from the installed libraries
+- Ensure the UI is responsive and user-friendly
+- All UI code should be contained in the App.vue.
+    - You should still use composables as needed
 
-Resolve the conflicts and complete the merge using your chosen strategy.
+## Getting Started
 
-## Task 2: Navigation Menu
+### 1. Setup Internal Package Registry
 
-Rebase your day-2 branch from master and then add a navigation menu to your application. 
+First, create a `.npmrc` file in the project root with the following content:
 
-**Requirements:**
-- Must function as navigation (routing between views/sections)
-- Implementation approach is flexible (tabs, sidebar, header nav, etc.)
-- Must be responsive
-
-Commit and push your changes.
-
-## Task 3: World Clock Feature
-
-Add configurable world clocks that display current times in different timezones.
-
-**Requirements:**
-- **Default clocks:** User's local time (browser timezone), EST, and your current physical location timezone
-- Users can add and remove additional clocks
-- Clock preferences persist between page visits (use localStorage)
-
-**Required setup:**
-```bash
-npm install @vueuse/core dayjs
+```
+registry=https://registry.npmjs.org/
+@ccm-engineering:registry=https://npm.pkg.github.com/
+//npm.pkg.github.com/:_authToken=${NPM_AUTH_TOKEN}
+legacy-peer-deps=true
 ```
 
-You're encouraged to use these libraries but not required to.
+Make sure you have the `NPM_AUTH_TOKEN` environment variable set with your GitHub personal access token. If you're unsure how to do this you can instead replace it with your AUTH token. Just make sure it's not committed!
 
-Commit and push your changes.
+### 2. Install Required Internal Libraries
 
-## Final Step
+Add the following CCM internal packages to your project:
 
-Once you've completed Tasks 2 and 3, raise a new PR from your `-day-2` branch against your original Day 1 branch (e.g., `feature/yourname-day-2` → `feature/yourname`). Take a moment to reflect and comment any observations or things you wish you did differently.
+```bash
+@ccm-engineering/ccm-common-style@1.3.21
+@ccm-engineering/base-ui-library@2.1.0
+@ccm-engineering/ui-components@2.0.1
+```
 
-## Development Setup
-
+### 3. Install other dependencies:
 ```bash
 npm install
+```
+
+### 4. Start the development server:
+```bash
 npm run dev
 ```
+
+## Tips
+
+- Consider using `setInterval` for time updates
+- Think about state management (refs, computed properties)
+- Format time display consistently
+- Handle edge cases (multiple starts, resets during timing, etc.)
+- Explore the CCM UI component libraries to see what components are available
+- Use CCM styling components for consistent design
+    - You will need to explore existing repos to understand how the imports should be structured
