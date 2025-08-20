@@ -1,12 +1,14 @@
 <script setup>
 import { CButton } from "@ccm-engineering/ui-components";
-import { ref, computed, watch } from "vue";
-const startTime = ref(0);
-const updatedTime = ref(0);
-const difference = ref(0);
-const running = ref(false);
-const interval = ref(null);
-const laps = ref([]);
+import {computed, watch } from "vue";
+import {myRef} from '../helper/customRef'
+const startTime = myRef(0);
+const updatedTime = myRef(0);
+const difference = myRef(0);
+const running = myRef(false);
+const interval = myRef(null);
+const laps = myRef([]);
+
 
 const toggleStartStop = () => {
   if (!running.value) {
@@ -60,6 +62,7 @@ watch(running, (newVal) => {
       <CButton
         :label="running ? 'Stop' : 'Start'"
         @click="toggleStartStop"
+
         type="fill"
         :icon-class="
           running ? 'fa-solid fa-circle-stop' : 'fa-solid fa-circle-play'

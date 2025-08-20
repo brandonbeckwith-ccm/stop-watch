@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { ref, onMounted } from "vue";
+import { ref, onMounted, computed } from "vue";
 import dayjs from "dayjs";
 import utc from "dayjs/plugin/utc";
 import timezone from "dayjs/plugin/timezone";
@@ -10,12 +10,11 @@ import {
   CButtonDropdown,
   CInput,
 } from "@ccm-engineering/ui-components";
+import { debouncedRef } from "../helper/customRef";
 
 dayjs.extend(utc);
 dayjs.extend(timezone);
 dayjs.extend(timezone);
-
-
 
 const defaultTimezones = [
   { label: "Local Time", value: "local" },
@@ -43,10 +42,10 @@ const timezoneOptions = [
 ];
 
 const clocks = useLocalStorage("clocks", defaultTimezones);
-const dropNewClock = ref<string>("select time Zone");
-const inputNewClock = ref<string>("");
+const dropNewClock = ref<string | null>(null);
+const inputNewClock = debouncedRef<string | null>(null, 1000);
 
-const addClock = (newClock: string) => {
+const addClock = (newClock: string | null) => {
   if (!newClock || newClock === "select time Zone") {
     alert("Please Selecte a valid Time zone! Thank you");
     return;
@@ -63,8 +62,8 @@ const addClock = (newClock: string) => {
       "Invalid timezone. Please use a valid IANA timezone (e.g., Europe/Paris)"
     );
   }
-  dropNewClock.value = "select time Zone";
-  inputNewClock.value = "";
+  dropNewClock.value = null;
+  inputNewClock.value = null;
 };
 
 const removeClock = (index: number) => {
@@ -86,8 +85,10 @@ const updateTimes = () => {
 
 const selectClock = (index: number) => {
   dropNewClock.value = timezoneOptions[index];
-  
 };
+
+const disable = computed(() => (dropNewClock.value ? true : false));
+const disable2 = computed(() => (inputNewClock.value ? true : false));
 
 useIntervalFn(updateTimes, 1000);
 onMounted(updateTimes);
@@ -112,9 +113,9 @@ onMounted(updateTimes);
     <div class="add-clock">
       <CButtonDropdown
         color="primary"
-        :disable="false"
+        :disable="disable2"
         iconClass="fal fa-watch"
-        :label="dropNewClock"
+        :label="dropNewClock ?? 'select time Zone'"
         noDataText="No data found"
         radius="xs"
         size="size-32"
@@ -136,10 +137,13 @@ onMounted(updateTimes);
       </CButtonDropdown>
       <h3><b>OR</b></h3>
       <CInput
+        :disable="disable"
         v-model="inputNewClock"
         placeholder="Enter timezone (e.g. Europe/Paris)"
       />
+      <span>{{ inputNewClock }}</span>
     </div>
+
     <CButton
       label="Add Clock"
       icon-class="fal fa-plus"
@@ -243,7 +247,7 @@ onMounted(updateTimes);
     min-width: 200px;
     margin-bottom: 10px;
   }
-  h3{
+  h3 {
     margin: 0;
   }
 

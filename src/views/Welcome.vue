@@ -1,4 +1,4 @@
-<script lang="ts"></script>
+<script setup lang="ts"></script>
 <template>
   <div style="text-align: center; margin-top: 2rem;">
     <h1>Welcome to the Time App ⏰</h1>
