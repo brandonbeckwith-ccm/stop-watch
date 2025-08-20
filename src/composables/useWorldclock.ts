@@ -1,11 +1,12 @@
-import { onMounted, onUnmounted, ref, watch } from "vue";
+import { computed, customRef, onMounted, onUnmounted, ref, watch } from "vue";
 import type { Clock } from "../types/clock";
+import { server } from "typescript";
 
 export const useWorldClock = () => {
   const saved = localStorage.getItem("worldclocks");
   const clocks = ref<Clock[]>(saved ? JSON.parse(saved) : []);
   const times = ref<Record<string, string>>({});
-  let interval=0
+  let interval = 0;
 
   if (!saved) {
     clocks.value = [
@@ -40,23 +41,23 @@ export const useWorldClock = () => {
   };
 
   const timezoneOptions = [
-  "Asia/Kolkata",
-  "Asia/Tokyo",
-  "Asia/Dubai",
-  "Asia/Shanghai",
-  "Asia/Singapore",
-  "Europe/London",
-  "Europe/Paris",
-  "Europe/Berlin",
-  "America/New_York",
-  "America/Chicago",
-  "America/Los_Angeles",
-  "America/Sao_Paulo",
-  "Australia/Sydney",
-  "Pacific/Auckland",
-  "Africa/Johannesburg",
-  "Africa/Nairobi",
-];
+    "Asia/Kolkata",
+    "Asia/Tokyo",
+    "Asia/Dubai",
+    "Asia/Shanghai",
+    "Asia/Singapore",
+    "Europe/London",
+    "Europe/Paris",
+    "Europe/Berlin",
+    "America/New_York",
+    "America/Chicago",
+    "America/Los_Angeles",
+    "America/Sao_Paulo",
+    "Australia/Sydney",
+    "Pacific/Auckland",
+    "Africa/Johannesburg",
+    "Africa/Nairobi",
+  ];
 
   const updatedTime = () => {
     clocks.value.forEach((clock) => {
@@ -69,14 +70,13 @@ export const useWorldClock = () => {
     });
   };
 
-  onMounted(()=>{
-    updatedTime(),
-    interval=window.setInterval(updatedTime,1000)
-  })
+  onMounted(() => {
+    updatedTime(), (interval = window.setInterval(updatedTime, 1000));
+  });
 
-  onUnmounted(()=>{
-    clearInterval(interval)
-  })
+  onUnmounted(() => {
+    clearInterval(interval);
+  });
 
   watch(
     clocks,
@@ -86,11 +86,43 @@ export const useWorldClock = () => {
     { deep: true }
   );
 
+  function debouncedRefForSearch<T>(initialValue: T, delay = 300) {
+    let timeout: number;
+    return customRef<T>((track, trigger) => {
+      let value = initialValue;
+      return {
+        get() {
+          track();
+          return value;
+        },
+        set(newValue: T) {
+          clearInterval(timeout);
+          timeout = window.setTimeout(() => {
+            value = newValue;
+            trigger();
+          }, delay);
+        },
+      };
+    });
+  }
+
+  const search = debouncedRefForSearch("", 300);
+
+  const filteredClocks = computed(() => {
+    if (!search.value) {
+      return clocks.value;
+    }
+    return clocks.value.filter((cl) =>
+      cl.label.toLowerCase().includes(search.value.toLowerCase())
+    );
+  });
   return {
     clocks,
     addClock,
     removeClock,
     updatedTime,
-    times
+    filteredClocks,
+    search,
+    times,
   };
 };
