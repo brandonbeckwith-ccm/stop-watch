@@ -2,6 +2,7 @@
 import { CTabs } from "@ccm-engineering/ui-components";
 import Stopwatch from "./custom-component/Stopwatch.vue";
 import WorldClock from "./custom-component/WorldClock.vue";
+import CustomRef from "./custom-component/CustomRef.vue";
 
 const tabs = [
   {
@@ -14,8 +15,14 @@ const tabs = [
     value: "worldClock",
     icon: "fa-light fa-clock",
   },
+  {
+    label: "Custom Ref",
+    value: "customRef",
+    icon: "fal fa-code",
+  },
 ];
 </script>
+
 <template>
   <div id="app">
     <CTabs
@@ -30,6 +37,9 @@ const tabs = [
         </div>
         <div v-if="activeValue == 'worldClock'">
           <WorldClock />
+        </div>
+        <div v-if="activeValue == 'customRef'">
+          <CustomRef />
         </div>
       </template>
     </CTabs>
