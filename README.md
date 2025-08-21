@@ -1,66 +1,61 @@
-# Day 2.5: Git Merge Practice, Feature Development & Reactivity
+# Day 3: Advanced Vue Features & Navigation
 
-## Task 1: Git Conflict Resolution
+## Task 1: Category-Based Navigation
 
-Find your assigned PR (one of PRs #15-26) where someone else's branch merges into your `-merge-practice` branch.
-
-**Your options for resolving conflicts:**
-- **Merge commit**: Standard merge with merge commit
-- **Rebase**: Replay commits to create linear history  
-- **Squash merge**: Combine all commits into single commit
-
-Resolve the conflicts and complete the merge using your chosen strategy.
-
-## Task 2: Navigation Menu
-
-Rebase your day-2 branch from master and then add a navigation menu to your application. 
+Update the navigation to support categories. Move the clock-related pages under a Clock category.
 
 **Requirements:**
-- Must function as navigation (routing between views/sections)
-- Implementation approach is flexible (tabs, sidebar, header nav, etc.)
-- Must be responsive
+- Organize existing clock functionality under a "Clock" category
+- Implement nested/grouped navigation structure
+- Maintain responsive design
 
-Commit and push your changes.
+## Task 2: Calculator Application
 
-## Task 3: World Clock Feature
-
-Add configurable world clocks that display current times in different timezones.
+Create a new calculator page supporting basic mathematical operations.
 
 **Requirements:**
-- **Default clocks:** User's local time (browser timezone), EST, and your current physical location timezone
-- Users can add and remove additional clocks
-- Clock preferences persist between page visits (use localStorage)
+- Support division, multiplication, addition, subtraction, and parentheses
+- Use Windows calculator as a design reference
+- Support both GUI button clicks and keyboard input (Google calculator style)
+- Implement calculation history with ability to restore previous calculations
+- Display current calculation and result clearly
 
-**Required setup:**
+**Mathematical Operations:**
+- Basic arithmetic: +, -, ×, ÷
+- Parentheses for order of operations
+- Clear/reset functionality
+- Error handling for invalid operations
+
+## Task 3: Vue Reactivity Research
+
+Update this README with your findings on Vue reactivity patterns found in real-world applications.
+
+**Research Focus:**
+- Document examples of different types of refs, computeds, and reactives
+- Find patterns in open-source Vue projects
+- Identify common use cases and best practices
+- Note any interesting or unexpected implementations
+
+**Deliverable:** Add a new section below with your research findings, including:
+- Code examples (with source attribution)
+- Use case descriptions
+- Personal observations or insights
+
+## Getting Started
+
+Create a new branch for day 3 work building off your existing day-2 branch:
+
 ```bash
-npm install @vueuse/core dayjs
+git checkout feature/yourname-day-2
+git pull origin feature/yourname-day-2
+git checkout -b feature/yourname-day-3
 ```
 
-You're encouraged to use these libraries but not required to.
-
-Commit and push your changes.
-
-## Task 4: Vue Reactivity Deep Dive
-
-Vue's reactivity system uses JavaScript Proxies to track dependencies and trigger updates. Explore how this works by implementing a custom reactive ref.
-
-**Resources:**
-- [Vue Reactivity in Depth](https://vuejs.org/guide/extras/reactivity-in-depth.html) - Official docs explaining proxy-based reactivity
-- [Reactivity API: Advanced](https://vuejs.org/api/reactivity-advanced.html) - customRef, shallowRef, triggerRef APIs
-- [How Vue 3 Reactivity Works Under the Hood](https://medium.com/@ignatovich.dm/how-vue-3s-reactivity-works-under-the-hood-with-proxies-explained-simply-4593048bafdf) - Deep dive into implementation
-
-**Your Task:**
-Implement a custom ref using Vue's `customRef` API. Consider these use cases as inspiration:
-- **Debounced input**: Delay reactivity updates for search/filter inputs
-- **Validation ref**: Only trigger updates when value passes validation
-- **History ref**: Track previous values with undo capability
-- **Throttled ref**: Limit update frequency for performance-intensive operations
-
-Try to integrate your new ref with one of the features you've worked on. If you can't please go ahead and
+Complete Tasks 1 and 2, committing and pushing your changes as you go.
 
 ## Final Step
 
-Once you've completed Tasks 2, 3, and 4, raise a new PR from your `-day-2` branch against your original Day 1 branch (e.g., `feature/yourname-day-2` → `feature/yourname`). Take a moment to reflect and comment any observations or things you wish you did differently.
+Once you've completed all tasks, raise a new PR from your `-day-3` branch against your day-2 branch (e.g., `feature/yourname-day-3` → `feature/yourname-day-2`). Include your Task 3 research findings in the PR description or as commits to this README.
 
 ## Development Setup
 
