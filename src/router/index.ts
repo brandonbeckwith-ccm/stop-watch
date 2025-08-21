@@ -5,7 +5,8 @@ const routes = [
     { path: '/laps', name: 'Laps', component: () => import('../pages/Laps.vue') },
     {
         path: '/world-clock', component: () => import('../pages/WorldClock.vue')
-    }
+    },
+    { path: '/custom-ref-demo', component: () => import('../pages/CustomRefDemo.vue') }
 ]
 
 export const router = createRouter({
