@@ -1,9 +1,14 @@
-import { reactive, ref } from "vue";
+import { computed, ref, onUnmounted } from "vue";
 
 export const useStopwatch = () => {
-  const intervalId = ref<number | undefined>();
+  const intervalId = ref<ReturnType<typeof setInterval> | null>(null);
   const elapsedTime = ref<number>(0);
-  const laps = reactive<number[]>([]);
+  const laps = ref<number[]>([]);
+  const isStarted = ref<boolean>(false);
+
+  const isResetDisabled = computed(() => {
+    return elapsedTime.value === 0 && laps.value.length === 0;
+  });
 
   const startStopWatch = () => {
     if (intervalId.value) return;
@@ -15,26 +20,46 @@ export const useStopwatch = () => {
   const stopStopWatch = () => {
     if (intervalId.value) {
       clearInterval(intervalId.value);
-      intervalId.value = undefined;
+      intervalId.value = null;
     }
   };
 
   const resetStopWatch = () => {
     stopStopWatch();
     elapsedTime.value = 0;
-    laps.splice(0, laps.length);
+    laps.value.splice(0);
   };
 
   const addLap = () => {
-    laps.unshift(elapsedTime.value);
+    laps.value.unshift(elapsedTime.value);
   };
+
+  const triggerHandler = () => {
+    if (isStarted.value) {
+      stopStopWatch();
+      isStarted.value = false;
+    } else {
+      startStopWatch();
+      isStarted.value = true;
+    }
+  };
+
+  const resetHandler = () => {
+    resetStopWatch();
+    isStarted.value = false;
+  };
+
+  onUnmounted(() => {
+    stopStopWatch();
+  });
 
   return {
     elapsedTime,
     laps,
-    startStopWatch,
-    stopStopWatch,
-    resetStopWatch,
+    isResetDisabled,
+    isStarted,
     addLap,
+    triggerHandler,
+    resetHandler,
   };
 };

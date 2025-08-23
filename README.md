@@ -1,64 +1,65 @@
-# Stopwatch Assignment
+# Day 3: Advanced Vue Features & Navigation
 
-Build a fully functional stopwatch application with the following features:
+## Task 1: Category-Based Navigation
 
-### Required Functionality
-- **Time Display**: Show elapsed time in `MM:SS:MS` format
-- **Start**: Begin timing
-- **Stop**: Pause timing (should be able to resume)
-- **Reset**: Reset timer to 00:00:00
-- **Lap**: Record lap times while the stopwatch is running
+Update the navigation to support categories. Move the clock-related pages under a Clock category.
 
-### Technical Requirements
-- Work on a branch formatted as `feature/<your_name>` and push it when you're done
-- Use Vue 3 Composition API with `<script setup>`
-- Implement proper TypeScript typing
-- **Use CCM internal UI components** from the installed libraries
-- Ensure the UI is responsive and user-friendly
-- All UI code should be contained in the App.vue.
-    - You should still use composables as needed
+**Requirements:**
+- Organize existing clock functionality under a "Clock" category
+- Implement nested/grouped navigation structure
+- Maintain responsive design
+
+## Task 2: Calculator Application
+
+Create a new calculator page supporting basic mathematical operations.
+
+**Requirements:**
+- Support division, multiplication, addition, subtraction, and parentheses
+- Use Windows calculator as a design reference
+- Support both GUI button clicks and keyboard input (Google calculator style)
+- Implement calculation history with ability to restore previous calculations
+- Display current calculation and result clearly
+
+**Mathematical Operations:**
+- Basic arithmetic: +, -, ×, ÷
+- Parentheses for order of operations
+- Clear/reset functionality
+- Error handling for invalid operations
+
+## Task 3: Vue Reactivity Research
+
+Update this README with your findings on Vue reactivity patterns found in real-world applications.
+
+**Research Focus:**
+- Document examples of different types of refs, computeds, and reactives
+- Find patterns in open-source Vue projects
+- Identify common use cases and best practices
+- Note any interesting or unexpected implementations
+
+**Deliverable:** Add a new section below with your research findings, including:
+- Code examples (with source attribution)
+- Use case descriptions
+- Personal observations or insights
 
 ## Getting Started
 
-### 1. Setup Internal Package Registry
-
-First, create a `.npmrc` file in the project root with the following content:
-
-```
-registry=https://registry.npmjs.org/
-@ccm-engineering:registry=https://npm.pkg.github.com/
-//npm.pkg.github.com/:_authToken=${NPM_AUTH_TOKEN}
-legacy-peer-deps=true
-```
-
-Make sure you have the `NPM_AUTH_TOKEN` environment variable set with your GitHub personal access token. If you're unsure how to do this you can instead replace it with your AUTH token. Just make sure it's not committed!
-
-### 2. Install Required Internal Libraries
-
-Add the following CCM internal packages to your project:
+Create a new branch for day 3 work building off your existing day-2 branch:
 
 ```bash
-@ccm-engineering/ccm-common-style@1.3.21
-@ccm-engineering/base-ui-library@2.1.0
-@ccm-engineering/ui-components@2.0.1
+git checkout feature/yourname-day-2
+git pull origin feature/yourname-day-2
+git checkout -b feature/yourname-day-3
 ```
 
-### 3. Install other dependencies:
+Complete Tasks 1 and 2, committing and pushing your changes as you go.
+
+## Final Step
+
+Once you've completed all tasks, raise a new PR from your `-day-3` branch against your day-2 branch (e.g., `feature/yourname-day-3` → `feature/yourname-day-2`). Include your Task 3 research findings in the PR description or as commits to this README.
+
+## Development Setup
+
 ```bash
 npm install
-```
-
-### 4. Start the development server:
-```bash
 npm run dev
 ```
-
-## Tips
-
-- Consider using `setInterval` for time updates
-- Think about state management (refs, computed properties)
-- Format time display consistently
-- Handle edge cases (multiple starts, resets during timing, etc.)
-- Explore the CCM UI component libraries to see what components are available
-- Use CCM styling components for consistent design
-    - You will need to explore existing repos to understand how the imports should be structured
