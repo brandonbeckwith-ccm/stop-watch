@@ -1,9 +1,15 @@
 <script setup lang="ts">
-import { CButton, CIcon, CInput } from "@ccm-engineering/ui-components";
+import {
+  CButton,
+  CIcon,
+  CInput,
+  CSearchInput,
+} from "@ccm-engineering/ui-components";
 import { useWorldClock } from "../composables/useWorldClock";
 
 const {
-  timezones,
+  filteredTimezones,
+  searchQuery,
   newTimezone,
   errorMessage,
   getTime,
@@ -18,6 +24,14 @@ const {
   <div class="world-clocks">
     <h2>World Clocks</h2>
 
+    <div class="search-bar">
+      <CSearchInput
+        v-model="searchQuery"
+        placeholder="Search timezone..."
+        theme="mt-black"
+      />
+    </div>
+
     <table class="clocks-table">
       <thead>
         <tr>
@@ -27,7 +41,7 @@ const {
         </tr>
       </thead>
       <tbody>
-        <tr v-for="(tz, index) in timezones" :key="tz">
+        <tr v-for="(tz, index) in filteredTimezones" :key="tz">
           <td>{{ getCityName(tz) }}</td>
           <td>{{ getTime(tz) }}</td>
           <td>
@@ -50,6 +64,8 @@ const {
       <CInput
         v-model="newTimezone"
         placeholder="Enter IANA timezone (e.g., Asia/Tokyo)"
+        input-theme="mt-black"
+        radius="xxs"
       />
       <CButton
         label="Add Clock"
