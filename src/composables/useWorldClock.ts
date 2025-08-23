@@ -1,21 +1,32 @@
-import { ref, onMounted } from "vue";
+import { ref, onMounted, computed } from "vue";
 import { useStorage, useNow } from "@vueuse/core";
 import dayjs from "dayjs";
 import { formatDateTime } from "../utils/formatter";
+import { useDebouncedRef, useDebouncedValidatedRef } from "./useCustomRef";
 
 export const useWorldClock = () => {
   const now = useNow();
   const localTz = dayjs.tz.guess();
 
   const timezones = useStorage<string[]>("world-clocks", []);
-  const newTimezone = ref<string>("");
   const errorMessage = ref<string>("");
+
+  const newTimezone = useDebouncedValidatedRef<string>("", 500, 5, (msg) => {
+    errorMessage.value = msg;
+  });
+  const searchQuery = useDebouncedRef<string>("", 500);
+
+  const filteredTimezones = computed(() => {
+    if (!searchQuery.value) return timezones.value;
+    return timezones.value.filter((tz) =>
+      getCityName(tz).toLowerCase().includes(searchQuery.value.toLowerCase())
+    );
+  });
 
   const setDefaultTimezones = () => {
     if (timezones.value.length > 0) return;
 
     const defaults = [localTz];
-
     if (localTz.startsWith("America")) {
       defaults.push("Asia/Kolkata");
     } else if (localTz === "Asia/Kolkata") {
@@ -23,7 +34,6 @@ export const useWorldClock = () => {
     } else {
       defaults.push("America/New_York");
     }
-
     timezones.value = defaults;
   };
 
@@ -44,12 +54,10 @@ export const useWorldClock = () => {
 
   const addTimezone = () => {
     errorMessage.value = "";
-
     if (!newTimezone.value) {
       errorMessage.value = "Please enter a timezone.";
       return;
     }
-
     try {
       const test = dayjs().tz(newTimezone.value);
       if (!test.isValid()) throw new Error();
@@ -74,7 +82,8 @@ export const useWorldClock = () => {
   onMounted(setDefaultTimezones);
 
   return {
-    timezones,
+    filteredTimezones,
+    searchQuery,
     newTimezone,
     errorMessage,
     getTime,
