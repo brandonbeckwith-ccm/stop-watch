@@ -8,7 +8,6 @@ import {
 } from "../helpers/customRef";
 const debouncedInput = useDebouncedRef("", 500);
 const validatedInput = useValidatedRef("", (v) => v.length >= 3);
-const historyInput = useHistoryRef("", 5);
 const throttledInput = useThrottledRef("", 1000);
 const { state, history } = useHistoryRef<string>("", 5);
 </script>

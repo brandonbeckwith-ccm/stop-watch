@@ -1,14 +1,13 @@
 <script setup lang="ts">
-import { onMounted, ref } from "vue";
+import { onMounted } from "vue";
 import Clock from "./Clock.vue";
 import {
   CButton,
-  CInput,
   CMultipleSelect,
 } from "@ccm-engineering/ui-components";
-import { useWorldClock } from "../helpers";
+import { useWorldClock } from "../composables/worldClock";
 
-const {selectedTimeZone,getClocks,saveClocks,addClock,timeZones,removeClock,clocks} = useWorldClock()
+const {selectedTimeZone,getClocks,addClock,timeZones,removeClock,clocks} = useWorldClock()
 onMounted(()=>{
     getClocks()
 })
