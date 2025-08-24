@@ -1,12 +1,11 @@
 <script setup lang="ts">
+import NavBar from './components/NavBar.vue';
+
 </script>
 
 <template>
-  <div id="app">
-    <h1>Stopwatch Assignment</h1>
-    <p>Build your stopwatch here! Check the README.md for requirements.</p>
-  </div>
+  <NavBar />
+  <main>
+    <router-view />
+  </main>
 </template>
-
-<style>
-</style>
