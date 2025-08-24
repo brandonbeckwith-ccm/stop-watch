@@ -1,14 +1,15 @@
 <script setup lang="ts">
 import { computed } from 'vue'
 import { CButton } from '@ccm-engineering/ui-components'
-import { formatTime, isRunning, lap, reset, start, stop, time } from '../helpers/stopwatch'
-
+import { useStopwatch } from '../helpers/stopwatch'
+import Table from '../components/Table.vue'
+const { formatTime, isRunning, lap, reset, start, stop, time } = useStopwatch();
 const toggleLabel = computed(() => (isRunning.value ? 'Stop' : 'Start'))
 const toggleAction = () => { isRunning.value ? stop() : start() }
 </script>
 
 <template>
-    <div>
+    <div class="outer">
         <div class="wrapper">
             <div class="box has-background-light left">
                 <h1 class="is-size-1 has-text-weight-bold">
@@ -21,6 +22,7 @@ const toggleAction = () => { isRunning.value ? stop() : start() }
                 </div>
             </div>
         </div>
+        <Table></Table>
     </div>
 </template>
 
@@ -30,6 +32,7 @@ const toggleAction = () => { isRunning.value ? stop() : start() }
     flex-direction: row;
     justify-content: space-between;
     gap: 25px;
+    margin: 10px 0;
 }
 
 .left,

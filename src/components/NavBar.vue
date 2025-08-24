@@ -16,7 +16,6 @@ const closeMenu = () => (menuOpen.value = false)
     </div>
     <nav :class="['menu', { open: menuOpen }]" style="display:flex; gap:24px;">
       <RouterLink to="/" class="menu-link" @click="closeMenu">Home</RouterLink>
-      <RouterLink to="/laps" class="menu-link" @click="closeMenu">Laps</RouterLink>
       <RouterLink to="/world-clock" class="menu-link" @click="closeMenu">World Clock</RouterLink>
       <RouterLink to="/custom-ref-demo" class="menu-link" @click="closeMenu">CustomRef Demo</RouterLink>
     </nav>

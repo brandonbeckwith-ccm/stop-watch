@@ -5,15 +5,13 @@ export type Lap = {
   lap: number
   time: number
 }
+export const laps = ref<Lap[]>([])
+export function useStopwatch() {
+  const time = ref(0)
+  const interval = ref<number | null>(null)
+  const isRunning = ref(false)
 
-// export function useStopwatch() {
-  export const time = ref(0)
-  export const interval = ref<number | null>(null)
-  export const isRunning = ref(false)
-  export const laps = ref<Lap[]>([])
-
-  export const start = () => {
-
+  const start = () => {
     if (isRunning.value) return
     isRunning.value = true
     interval.value = setInterval(() => {
@@ -21,9 +19,7 @@ export type Lap = {
     }, 10)
   }
 
-
-  export const stop = () => {
-
+  const stop = () => {
     if (interval.value !== null) {
       clearInterval(interval.value)
       interval.value = null
@@ -31,28 +27,23 @@ export type Lap = {
     }
   }
 
-  export const reset = () => {
-
+  const reset = () => {
     stop()
     time.value = 0
     laps.value = []
   }
 
 
-  export const lap = () => {
-
+  const lap = () => {
     if (isRunning.value) {
       laps.value.push({
         lap: laps.value.length + 1,
         time: time.value
       })
-
-      
     }
   }
 
-  export const formatTime = (ms: number): string => {
-
+  const formatTime = (ms: number): string => {
     const minutes = String(Math.floor(ms / 60000)).padStart(2, '0')
     const seconds = String(Math.floor((ms % 60000) / 1000)).padStart(2, '0')
     const milliseconds = String(Math.floor((ms % 1000) / 10)).padStart(2, '0')
@@ -60,16 +51,15 @@ export type Lap = {
   }
 
 
-  // return {
-  //   time,
-  //   isRunning,
-  //   laps,
-  //   start,
-  //   stop,
-  //   reset,
-  //   lap,
-  //   formatTime
-  // }
-// }
+  return {
+    time,
+    isRunning,
+    start,
+    stop,
+    reset,
+    lap,
+    formatTime
+  }
+}
 
 

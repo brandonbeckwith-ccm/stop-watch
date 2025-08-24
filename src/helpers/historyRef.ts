@@ -20,7 +20,7 @@ export function historyRef<T>(initial: T) {
     }
   })
 
-  function undo() {
+  const undo=()=> {
     if (history.length) {
       value = history.pop()!
       trigger()

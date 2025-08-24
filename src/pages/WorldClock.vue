@@ -23,7 +23,7 @@ const error = ref('')
 
 let timer: number | undefined
 
-function isValidTimezone(tz: string) {
+const isValidTimezone = (tz: string) => {
     try {
         Intl.DateTimeFormat(undefined, { timeZone: tz })
         return true
@@ -32,14 +32,14 @@ function isValidTimezone(tz: string) {
     }
 }
 
-function loadClocks() {
+const loadClocks = () => {
     const saved = localStorage.getItem(STORAGE_KEY)
     clocks.value = saved ? JSON.parse(saved) : defaultClocks
 }
-function saveClocks() {
+const saveClocks = () => {
     localStorage.setItem(STORAGE_KEY, JSON.stringify(clocks.value))
 }
-function addClock() {
+const addClock = () => {
     error.value = ''
     if (!newLabel.value || !newTz.value) return
     if (!isValidTimezone(newTz.value)) {
@@ -50,7 +50,7 @@ function addClock() {
     newLabel.value = ''
     newTz.value = ''
 }
-function removeClock(idx: number) {
+const removeClock = (idx: number) => {
     clocks.value.splice(idx, 1)
 }
 
@@ -80,7 +80,7 @@ watch(clocks, saveClocks, { deep: true })
                     </div>
                     <small>{{ clock.tz }}</small>
                 </div>
-                <CButton label="✕"  @clicked="removeClock(idx)" size="size-32"/>
+                <CButton label="✕" @clicked="removeClock(idx)" size="size-32" />
             </div>
         </div>
         <form @submit.prevent="addClock" class="add-form">

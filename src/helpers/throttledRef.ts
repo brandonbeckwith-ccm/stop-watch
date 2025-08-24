@@ -12,7 +12,7 @@ export function throttledRef<T>(initial: T, delay = 300) {
     },
     set(newValue: T) {
       lastValue = newValue
-      if (!timeout) {
+      if (!timeout) {   
         timeout = setTimeout(() => {
           value = lastValue
           trigger()

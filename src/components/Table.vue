@@ -3,7 +3,8 @@ import { CCMDataTable } from '@ccm-engineering/ccm-data-table';
 
 import { CTag } from '@ccm-engineering/ui-components';
 import { Column } from 'primevue'
-import { formatTime, laps } from '../helpers/stopwatch';
+import { useStopwatch, laps } from '../helpers/stopwatch';
+const { formatTime } = useStopwatch();
 </script>
 
 <template>
