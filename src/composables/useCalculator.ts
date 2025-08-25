@@ -1,7 +1,7 @@
 import { ref, watch } from "vue";
 type HistoryEntry = { expression: string; result: string };
 
-export function useCalculator() {
+export const useCalculator = () => {
   const expression = ref("");
   const result = ref("0");
 

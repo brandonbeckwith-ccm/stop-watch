@@ -5,17 +5,17 @@ import { useCalculator } from "../composables/useCalculator";
 const {expression,result,append,clear,backspace,calculate,history,clearHistory,} = useCalculator();
 const showHistory = ref(false);
 
-function toggleHistory() {
+const toggleHistory = () => {
   showHistory.value = !showHistory.value;
 }
 
-function loadFromHistory(item: { expression: string; result: string }) {
+const loadFromHistory = (item: { expression: string; result: string }) => {
   expression.value = item.expression;
   result.value = item.result;
   showHistory.value = false;
 }
 
-function handleKeyDown(e: KeyboardEvent) {
+const handleKeyDown = (e: KeyboardEvent) => {
   const allowedKeys = ["0","1","2","3","4","5","6","7","8","9","+","-","*","/",".","(",")"];
 
   if (allowedKeys.includes(e.key)) {
