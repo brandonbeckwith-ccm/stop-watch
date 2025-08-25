@@ -1,3 +1,16 @@
+<script setup lang="ts">
+import { ref } from "vue";
+import { useRoute } from "vue-router";
+
+const isMenuOpen = ref(false);
+const toggleMenu = () => {
+  isMenuOpen.value = !isMenuOpen.value;
+};
+
+const route = useRoute();
+const isActive = (path: string) => route.path === path;
+</script>
+
 <template>
   <header>
     <nav class="navbar">
@@ -34,19 +47,6 @@
   </header>
 </template>
 
-<script setup lang="ts">
-import { ref } from "vue";
-import { useRoute } from "vue-router";
-
-const isMenuOpen = ref(false);
-const toggleMenu = () => {
-  isMenuOpen.value = !isMenuOpen.value;
-};
-
-const route = useRoute();
-const isActive = (path: string) => route.path === path;
-</script>
-
 <style scoped>
 .navbar {
   position: fixed;
@@ -82,6 +82,8 @@ const isActive = (path: string) => route.path === path;
   color: white;
   text-decoration: none;
   display: inline-block;
+  font-size: 1rem;
+  line-height: 1.25rem;
 }
 
 .nav-button:hover {

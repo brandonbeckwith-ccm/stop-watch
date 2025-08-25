@@ -1,3 +1,15 @@
+<script lang="ts" setup>
+defineProps<{
+  name: string;
+  time: string;
+  day: string;
+  zone: string;
+  showRemove: boolean;
+}>();
+
+defineEmits(["remove"]);
+</script>
+
 <template>
   <div class="time-card">
     <div class="card-content">
@@ -11,20 +23,6 @@
     </div>
   </div>
 </template>
-
-<script lang="ts" setup>
-
-
-defineProps({
-  name: String,
-  time: String,
-  day: String,
-  zone: String,
-  showRemove: Boolean,
-});
-
-defineEmits(["remove"]);
-</script>
 
 <style scoped>
 .time-card {

@@ -1,3 +1,21 @@
+<script lang="ts" setup>
+import { ref } from "vue";
+import { useWorldclock } from "../composables/useWorldclock";
+import TimeCard from "../components/TimeCard.vue";
+import { CButton } from "@ccm-engineering/ui-components";
+
+const {
+  cities,
+  userTimezones,
+  userClocksWithTime,
+  addClock,
+  removeClock,
+  defaultTimezones,
+} = useWorldclock();
+
+const selectedTimezone = ref("");
+</script>
+
 <template>
   <div class="world-clock-view">
     <h1>World Clock</h1>
@@ -8,7 +26,15 @@
           {{ city.name }} ({{ city.zone }})
         </option>
       </select>
-      <CButton class="add-btn" @click="() => addClock(selectedTimezone)" :disabled="!selectedTimezone || userTimezones.includes(selectedTimezone)" label="Add" size="size-44"></CButton>
+      <CButton
+        class="add-btn"
+        @click="() => addClock(selectedTimezone)"
+        :disabled="
+          !selectedTimezone || userTimezones.includes(selectedTimezone)
+        "
+        label="Add"
+        size="size-44"
+      ></CButton>
     </div>
     <div class="cards">
       <TimeCard
@@ -25,29 +51,11 @@
   </div>
 </template>
 
-<script lang='ts' setup>
-import { ref } from 'vue';
-import { useWorldclock } from '../composables/useWorldclock';
-import TimeCard from '../components/TimeCard.vue';
-import { CButton } from '@ccm-engineering/ui-components';
-
-const {
-  cities,
-  userTimezones,
-  userClocksWithTime,
-  addClock,
-  removeClock,
-  defaultTimezones,
-} = useWorldclock();
-
-const selectedTimezone = ref('');
-</script>
-
 <style scoped>
 .world-clock-view {
   max-width: 900px;
   margin: 2em auto 0 auto;
-  font-family: 'Segoe UI', 'Roboto', Arial, sans-serif;
+  font-family: "Segoe UI", "Roboto", Arial, sans-serif;
 }
 h1 {
   text-align: center;
@@ -80,29 +88,6 @@ h1 {
   border: 2px solid #2b5876;
   box-shadow: 0 4px 16px rgba(44, 62, 80, 0.13);
 }
-/* .add-btn {
-  background: linear-gradient(90deg, #2b5876 0%, #4e4376 100%);
-  color: #fff;
-  border: none;
-  border-radius: 24px;
-  padding: 0.6em 2em;
-  font-size: 1.1em;
-  font-weight: 600;
-  cursor: pointer;
-  box-shadow: 0 2px 8px rgba(44, 62, 80, 0.10);
-  transition: background 0.2s, box-shadow 0.2s, transform 0.1s;
-} */
-/* .add-btn:disabled {
-  background: #bfc4d1;
-  color: #fff;
-  cursor: not-allowed;
-  box-shadow: none;
-}
-.add-btn:not(:disabled):hover {
-  background: linear-gradient(90deg, #4e4376 0%, #2b5876 100%);
-  transform: translateY(-2px) scale(1.04);
-  box-shadow: 0 4px 16px rgba(44, 62, 80, 0.18);
-} */
 .cards {
   display: grid;
   grid-template-columns: repeat(4, 1fr);
@@ -123,4 +108,3 @@ h1 {
   }
 }
 </style>
-

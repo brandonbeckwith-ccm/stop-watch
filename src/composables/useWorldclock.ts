@@ -1,16 +1,22 @@
 import { ref, computed, watch } from "vue";
-import { DateTime } from "luxon";
-import { cities } from "../Data/cities";
-import type { City } from "../Data/cities";
+import dayjs from "dayjs";
+import utc from "dayjs/plugin/utc";
+import tz from "dayjs/plugin/timezone";
 
-interface CityWithTime extends City {
+dayjs.extend(utc);
+dayjs.extend(tz);
+
+export interface CityZone {
+  name: string;
+  zone: string;
+}
+
+interface CityWithTime extends CityZone {
   time: string;
   day: string;
 }
 
-const getUserTimezone = (): string => {
-  return DateTime.now().zoneName;
-};
+const getUserTimezone = (): string => dayjs.tz.guess();
 
 const defaultTimezones: string[] = Array.from(new Set([getUserTimezone()]));
 
@@ -54,16 +60,13 @@ const removeClock = (timezone: string): void => {
   userTimezones.value = userTimezones.value.filter((z) => z !== timezone);
 };
 
-const getCityForTimezone = (timezone: string): City => {
-  return (
-    cities.find((city) => city.zone === timezone) || {
-      name: timezone,
-      zone: timezone,
-    }
-  );
+const getCityForTimezone = (timezone: string): CityZone => {
+  const last = timezone.split("/").pop() || timezone;
+  const name = last.replace(/_/g, " ");
+  return { name, zone: timezone };
 };
 
-const userClockCities = computed<City[]>(() =>
+const userClockCities = computed<CityZone[]>(() =>
   userTimezones.value.map((zone) => getCityForTimezone(zone))
 );
 
@@ -74,13 +77,50 @@ const updateClockTimes = (): void => {
     const city = getCityForTimezone(zone);
     return {
       ...city,
-      time: DateTime.now().setZone(zone).toFormat("HH:mm:ss"),
-      day: DateTime.now().setZone(zone).toFormat("ccc"),
+      time: dayjs().tz(zone).format("HH:mm:ss"),
+      day: dayjs().tz(zone).format("ddd"),
     };
   });
 };
 
+const cities = ref<CityZone[]>([]);
+const isLoadingCities = ref<boolean>(false);
+const citiesError = ref<string | null>(null);
+
+const getSupportedTimezones = (): string[] => {
+  try {
+    const maybe = (
+      Intl as unknown as { supportedValuesOf?: (input: string) => unknown }
+    ).supportedValuesOf;
+    const result = typeof maybe === "function" ? maybe("timeZone") : [];
+    return Array.isArray(result) ? (result as string[]) : [];
+  } catch {
+    return [];
+  }
+};
+
+const populateCitiesFromIntl = (): void => {
+  try {
+    isLoadingCities.value = true;
+    citiesError.value = null;
+    const zones = getSupportedTimezones();
+    if (zones.length === 0) {
+      const fallback = getUserTimezone();
+      cities.value = [getCityForTimezone(fallback)];
+      return;
+    }
+    cities.value = zones.map((zone) => getCityForTimezone(zone));
+  } catch (e: unknown) {
+    citiesError.value = e instanceof Error ? e.message : "Unknown error";
+    const fallback = getUserTimezone();
+    cities.value = [getCityForTimezone(fallback)];
+  } finally {
+    isLoadingCities.value = false;
+  }
+};
+
 if (typeof window !== "undefined") {
+  populateCitiesFromIntl();
   updateClockTimes();
   setInterval(updateClockTimes, 1000);
 }
@@ -88,6 +128,9 @@ if (typeof window !== "undefined") {
 export const useWorldclock = () => {
   return {
     cities,
+    isLoadingCities,
+    citiesError,
+    populateCitiesFromIntl,
     userTimezones,
     userClockCities,
     userClocksWithTime,
