@@ -3,6 +3,8 @@ import HomeView from "../views/HomeView.vue";
 import StopwatchView from "../views/StopwatchView.vue";
 import AboutView from "../views/AboutView.vue";
 import WorldClockView from "../views/WorldClockView.vue";
+import CalculatorView from "../views/CalculatorView.vue";
+
 
 const routes = [
   {
@@ -25,6 +27,11 @@ const routes = [
     name: "worldclock",
     component: WorldClockView,
   },
+    {
+    path: "/calculator",
+    name: "calculator",
+    component: CalculatorView,
+  }
 ];
 
 const router = createRouter({
