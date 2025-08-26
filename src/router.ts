@@ -19,6 +19,12 @@ const routes = [
     component: () => import('./views/WorldClockView.vue'),
     parentPath: '/',
   },
+  {
+    path: '/calculator',
+    name: 'calculator',
+    component: () => import('./views/CalculatorView.vue'),
+    parentPath: '/',
+  },
 ]
 
 const router = createRouter({

@@ -15,6 +15,7 @@
     "@ccm-engineering/ui-components": "^2.0.1",
     "@vueuse/core": "^13.7.0",
     "dayjs": "^1.11.13",
+    "mathjs": "^14.6.0",
     "vue": "^3.5.17",
     "vue-router": "^4.5.1"
   },

@@ -5,26 +5,17 @@ import { CButton } from '@ccm-engineering/ui-components'
 const router = useRouter()
 
 const features = [
-  {
-    title: 'Stopwatch',
-    description: 'Precise stopwatch with lap timing functionality',
-    icon: '⏱️',
-    route: '/stopwatch'
-  },
-  {
-    title: 'World Clock',
-    description: 'Track current times across multiple timezones',
-    icon: '🌍',
-    route: '/world-clock'
-  }
+  { title: 'Stopwatch', description: 'Track time precisely with laps', icon: '⏱️', route: '/stopwatch' },
+  { title: 'World Clock', description: 'See times across timezones', icon: '🌍', route: '/world-clock' },
+  { title: 'Calculator', description: 'Basic mathematical operations ', icon: '🧮', route: '/calculator' },
 ]
 </script>
 
 <template>
   <div class="home-container">
     <div class="hero-section">
-      <h1 class="hero-title">Time Management App</h1>
-      <p class="hero-subtitle">Professional time app with stopwatch and world clock, built with Vue 3</p>
+      <h1 class="hero-title">Time App</h1>
+      <p class="hero-subtitle">Simple tools to keep time under control</p>
     </div>
     
     <div class="features-grid">
