@@ -3,45 +3,33 @@ import dayjs from "dayjs";
 import timezone from "dayjs/plugin/timezone";
 import utc from "dayjs/plugin/utc";
 import CityList from "../components/CityList.vue";
+import { CModal } from "@ccm-engineering/ui-components";
 import { useWorldClock } from "../composables/useWorldClock";
+import CitySelectModal from "../components/CitySelectModal.vue";
 
 dayjs.extend(utc);
 dayjs.extend(timezone);
 
-const {
-  list,
-  now,
-  cities,
-  isCityListVisible,
-  timeZones,
-  toggleVisibility,
-  addItem,
-  removeItem,
-} = useWorldClock();
+const { list, now, timeZones, timeLabel, dateLabel, addItem, removeItem } = useWorldClock();
 </script>
 
 <template>
-  <div class="new-btn">
-    <button class="btn-6" @click="toggleVisibility">
-      {{ !isCityListVisible ? "Add New Cities" : "Back" }}
-    </button>
-  </div>
-  <div v-if="!isCityListVisible" class="app">
+  <div class="app">
     <div class="container">
       <ul class="clock-wall">
-        <li class="items" v-for="item of list">
+        <li class="items" v-for="(item, index) of list" :key="index">
           <span class="city-label">{{ item.city }}</span>
           <div class="date">
-            <span class="time-label">{{ dayjs(now).tz(timeZones[item.id]).format("hh:mm A") }}</span>
-            <span class="date-label">{{ dayjs(now).tz(timeZones[item.id]).format("ddd DD MMM YYYY") }}</span>
+            <span class="time-label">{{ timeLabel(item.id) }}</span>
+            <span class="date-label">{{ dateLabel(item.id) }}</span>
           </div>
           <button @click="removeItem(item.id)" class="btn">remove</button>
         </li>
       </ul>
+      <div class="new-btn">
+        <CitySelectModal />
+      </div>
     </div>
-  </div>
-  <div v-else-if="isCityListVisible">
-    <CityList :cities="cities" />
   </div>
 </template>
 
@@ -100,8 +88,9 @@ const {
 }
 .container {
   display: flex;
-  justify-content: center;
-  min-height: 500px;
+  justify-content: space-between;
+  flex-direction: column;
+  height: 550px;
   border-radius: 15px;
   min-width: 1200px;
   box-shadow: rgba(0, 0, 0, 0.05) 0px 6px 24px 0px,
@@ -121,23 +110,7 @@ const {
 }
 .new-btn {
   display: flex;
-  justify-content: center;
-  margin-bottom: 30px;
-}
-.btn-6 {
-  align-items: center;
-  height: 40px;
-  width: 200px;
-  border: 1px solid #dfdfdf;
-  border-radius: 11px;
-  color: #165c7d;
-  background-color: #e8eff2;
-  cursor: pointer;
-  display: flex;
-  right: 0px;
-  font-size: 1rem;
-  font-weight: 700;
-  line-height: 33.4929px;
-  justify-content: center;
+  padding-left: 35px;
+  margin-bottom: 20px;
 }
 </style>

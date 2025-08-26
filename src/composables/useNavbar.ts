@@ -15,10 +15,15 @@ export const useNavbar = () => {
         router.push("/stopwatch");
     }
 
+    const goCalculator = (): void => {
+        router.push("/calculator");
+    }
+
     return {
         goHome,
         goClocks,
-        goStopwatch
+        goStopwatch,
+        goCalculator
     }
 }
 

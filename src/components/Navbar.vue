@@ -2,7 +2,7 @@
 import { CIcon } from "@ccm-engineering/ui-components";
 import { useNavbar } from "../composables/useNavbar";
 
-const { goHome, goClocks, goStopwatch } = useNavbar();
+const { goHome, goClocks, goStopwatch, goCalculator } = useNavbar();
 </script>
 
 <template>
@@ -35,7 +35,6 @@ const { goHome, goClocks, goStopwatch } = useNavbar();
     <button class="btn" @click="goStopwatch">
       <CIcon
         :border="false"
-        hover
         icon="fa-regular fa-stopwatch"
         :noSpacing="false"
         size="large-48"
@@ -43,6 +42,17 @@ const { goHome, goClocks, goStopwatch } = useNavbar();
         radius="full"
       />
       <span class="btn-label">Stopwatch</span>
+    </button>
+    <button class="btn" @click="goCalculator">
+      <CIcon
+        :border="false"
+        icon="fa-regular fa-calculator"
+        :noSpacing="false"
+        size="large-48"
+        color="ocean-blue"
+        radius="full"
+      />
+      <span class="btn-label">Calculator</span>
     </button>
   </div>
 </template>

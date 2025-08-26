@@ -1,19 +1,17 @@
 <script setup lang="ts">
 import { useWorldClock } from "../composables/useWorldClock";
+import CityRows from "./CityRows.vue";
 
-const props = defineProps(["cities"]);
-
-const { addItem } = useWorldClock();
+const { cityGroup } = useWorldClock();
 </script>
 
 <template>
   <div>
-    <ul class="city-list">
-      <li class="items" v-for="item of props.cities">
-        <p class="city-label">{{ item.city }}</p>
-        <button @click="addItem(item)" class="btn">add</button>
-      </li>
-    </ul>
+    <CityRows
+      v-for="(cityGroup, index) of cityGroup"
+      :key="index"
+      :cityGroup="cityGroup"
+    />
   </div>
 </template>
 
@@ -56,6 +54,7 @@ const { addItem } = useWorldClock();
   flex-direction: row;
   gap: 25px;
   flex-wrap: wrap;
+  justify-content: space-between;
 }
 .city-label {
   font-size: 16px;
