@@ -4,102 +4,80 @@ import { useRoute, useRouter } from 'vue-router'
 
 const route = useRoute()
 const router = useRouter()
-const isSidebarOpen = ref(false)
 
-const navigationItems = [
+const expanded = ref(new Set(['clock']))
+
+const nav = [
   { name: 'Home', path: '/', icon: '🏠' },
-  { name: 'Stopwatch', path: '/stopwatch', icon: '⏱️' },
-  { name: 'World Clock', path: '/world-clock', icon: '🌍' },
+  {
+    name: 'Clock',
+    icon: '⏰',
+    items: [
+      { name: 'Stopwatch', path: '/stopwatch', icon: '⏱️' },
+      { name: 'World Clock', path: '/world-clock', icon: '🌍' },
+    ]
+  },
+  { name: 'Calculator', path: '/calculator', icon: '🧮' },
 ]
 
-const currentRoute = computed(() => route.path)
-
-const navigateTo = (path: string) => {
-  router.push(path)
-  if (window.innerWidth <= 768) {
-    isSidebarOpen.value = false
-  }
-}
-
-const toggleSidebar = () => {
-  isSidebarOpen.value = !isSidebarOpen.value
-}
-
-const closeSidebar = () => {
-  if (window.innerWidth <= 768) {
-    isSidebarOpen.value = false
-  }
+const isActive = (path: string) => route.path === path
+const isExpanded = (name: string) => expanded.value.has(name)
+const toggle = (name: string) => {
+  expanded.value.has(name) ? expanded.value.delete(name) : expanded.value.add(name)
 }
 </script>
 
 <template>
-  <div class="sidebar-container">
-    <div 
-      v-if="isSidebarOpen" 
-      class="sidebar-overlay"
-      @click="closeSidebar"
-    ></div>
+  <aside class="sidebar">
+    <div class="header" @click="router.push('/')">
+      <span>⏱️</span>
+      <span>TimeApp</span>
+    </div>
 
-    <!-- Sidebar -->
-    <aside class="sidebar" :class="{ open: isSidebarOpen }">
-      <!-- Sidebar Header -->
-      <div class="sidebar-header">
-        <div class="sidebar-brand" @click="navigateTo('/')">
-          <span class="brand-icon">⏱️</span>
-          <span class="brand-text">TimeApp</span>
-        </div>
-        <button class="close-button" @click="toggleSidebar">
-          <span>×</span>
-        </button>
-      </div>
-
-      <!-- Navigation Items -->
-      <nav class="sidebar-nav">
+    <nav class="nav">
+      <div v-for="item in nav" :key="item.name">
+        <!-- Regular item -->
         <div 
-          v-for="item in navigationItems" 
-          :key="item.path"
-          class="nav-item"
-          :class="{ active: currentRoute === item.path }"
-          @click="navigateTo(item.path)"
+          v-if="!item.items"
+          class="item"
+          :class="{ active: isActive(item.path) }"
+          @click="router.push(item.path)"
         >
-          <span class="nav-icon">{{ item.icon }}</span>
-          <span class="nav-text">{{ item.name }}</span>
+          <span>{{ item.icon }}</span>
+          <span>{{ item.name }}</span>
         </div>
-      </nav>
 
-      <!-- Sidebar Footer -->
-      <div class="sidebar-footer">
-        <p class="footer-text">Time Management App</p>
-        <p class="footer-version">v1.0.0</p>
+        <!-- Category -->
+        <div v-else class="category">
+          <div 
+            class="header"
+            :class="{ active: item.items.some(i => isActive(i.path)) }"
+            @click="toggle(item.name)"
+          >
+            <span>{{ item.icon }}</span>
+            <span>{{ item.name }}</span>
+            <span :class="{ expanded: isExpanded(item.name) }">▼</span>
+          </div>
+          
+          <div v-if="isExpanded(item.name)" class="items">
+            <div 
+              v-for="sub in item.items"
+              :key="sub.path"
+              class="item sub"
+              :class="{ active: isActive(sub.path) }"
+              @click="router.push(sub.path)"
+            >
+              <span>{{ sub.icon }}</span>
+              <span>{{ sub.name }}</span>
+            </div>
+          </div>
+        </div>
       </div>
-    </aside>
-
-    <!-- Toggle Button (mobile) -->
-    <button class="sidebar-toggle" @click="toggleSidebar">
-      <span class="hamburger">
-        <span></span>
-        <span></span>
-        <span></span>
-      </span>
-    </button>
-  </div>
+    </nav>
+  </aside>
 </template>
 
 <style scoped>
-.sidebar-container {
-  position: relative;
-}
-
-.sidebar-overlay {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background: rgba(0, 0, 0, 0.5);
-  z-index: 998;
-}
-
 .sidebar {
   position: fixed;
   top: 0;
@@ -111,209 +89,114 @@ const closeSidebar = () => {
   display: flex;
   flex-direction: column;
   z-index: 999;
-  transform: translateX(-100%);
-  transition: transform 0.3s ease;
-  box-shadow: 2px 0 8px rgba(0, 0, 0, 0.1);
 }
 
-.sidebar.open {
-  transform: translateX(0);
-}
-
-.sidebar-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 1.5rem;
-  border-bottom: 1px solid var(--ccm-color-border);
-}
-
-.sidebar-brand {
+.header {
   display: flex;
   align-items: center;
   gap: 0.5rem;
+  padding: 1.25rem 1.5rem;
+  border-bottom: 1px solid var(--ccm-color-border);
   cursor: pointer;
-  transition: opacity 0.2s ease;
 }
 
-.sidebar-brand:hover {
-  opacity: 0.8;
-}
-
-.brand-icon {
-  font-size: 1.5rem;
-}
-
-.brand-text {
-  font-size: 1.3rem;
+.header span:last-child {
   font-weight: 700;
   color: var(--ccm-color-primary);
 }
 
-.close-button {
-  display: none;
-  background: none;
-  border: none;
-  font-size: 1.5rem;
-  color: var(--ccm-color-text-secondary);
-  cursor: pointer;
-  padding: 0.25rem;
-  border-radius: 4px;
-  transition: all 0.2s ease;
-}
-
-.close-button:hover {
-  background: var(--ccm-color-surface-hover);
-  color: var(--ccm-color-text-primary);
-}
-
-.sidebar-nav {
+.nav {
   flex: 1;
-  padding: 1rem 0;
+  padding: 0.5rem 0;
 }
 
-.nav-item {
+.item {
   display: flex;
   align-items: center;
-  gap: 1rem;
-  padding: 1rem 1.5rem;
+  gap: 0.75rem;
+  padding: 0.75rem 1.25rem;
   cursor: pointer;
-  transition: all 0.2s ease;
   color: var(--ccm-color-text-secondary);
   border-left: 3px solid transparent;
+  transition: all 0.2s;
 }
 
-.nav-item:hover {
+.item:hover {
   background: var(--ccm-color-surface-hover);
   color: var(--ccm-color-text-primary);
   border-left-color: var(--ccm-color-primary);
 }
 
-.nav-item.active {
+.item.active {
   background: var(--ccm-color-primary);
   color: white;
   border-left-color: white;
 }
 
-.nav-icon {
-  font-size: 1.3rem;
-  width: 24px;
-  text-align: center;
+.category .header {
+  border-bottom: none;
+  border-left: 3px solid transparent;
 }
 
-.nav-text {
-  font-weight: 500;
-  font-size: 1rem;
+.category .header.active {
+  background: rgba(var(--ccm-color-primary-rgb), 0.1);
+  color: var(--ccm-color-primary);
+  border-left-color: var(--ccm-color-primary);
 }
 
-.sidebar-footer {
-  padding: 1.5rem;
-  border-top: 1px solid var(--ccm-color-border);
-  text-align: center;
+.category .header span:last-child {
+  margin-left: auto;
+  font-size: 0.75rem;
+  transition: transform 0.2s;
 }
 
-.footer-text {
-  margin: 0;
-  color: var(--ccm-color-text-secondary);
+.category .header span:last-child.expanded {
+  transform: rotate(180deg);
+}
+
+.items {
+  background: var(--ccm-color-surface-hover);
+  border-left: 3px solid var(--ccm-color-primary);
+  margin-left: 0.75rem;
+  margin-right: 0.5rem;
+  border-radius: 0 8px 8px 0;
+}
+
+.sub {
+  padding: 0.6rem 1.25rem 0.6rem 2rem;
+  border-left: none;
   font-size: 0.9rem;
-  margin-bottom: 0.5rem;
 }
 
-.footer-version {
-  margin: 0;
-  color: var(--ccm-color-text-secondary);
-  font-size: 0.8rem;
-  opacity: 0.7;
-}
-
-.sidebar-toggle {
-  display: none;
-  position: fixed;
-  top: 1rem;
-  left: 1rem;
-  z-index: 997;
-  background: var(--ccm-color-primary);
-  border: none;
-  border-radius: 8px;
-  padding: 0.75rem;
-  cursor: pointer;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
-  transition: all 0.2s ease;
-}
-
-.sidebar-toggle:hover {
-  transform: scale(1.05);
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
-}
-
-.hamburger {
-  width: 20px;
-  height: 16px;
-  position: relative;
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
-}
-
-.hamburger span {
-  display: block;
-  width: 100%;
-  height: 2px;
-  background: white;
-  transition: all 0.3s ease;
-  transform-origin: center;
-}
-
-/* Desktop Styles */
-@media (min-width: 769px) {
-  .sidebar {
-    transform: translateX(0);
-    position: fixed;
-  }
-  
-  .sidebar-toggle {
-    display: none;
-  }
-  
-  .close-button {
-    display: none;
-  }
-}
-
-/* Mobile Styles */
 @media (max-width: 768px) {
   .sidebar {
-    width: var(--sidebar-width);
+    width: 100%;
+    height: auto;
+    position: relative;
   }
   
-  .close-button {
-    display: block;
+  .nav {
+    display: flex;
+    overflow-x: auto;
+    padding: 0.5rem;
   }
   
-  .sidebar-toggle {
-    display: block;
+  .item, .category .header {
+    padding: 0.5rem 1rem;
+    white-space: nowrap;
+    border-left: none;
+    border-bottom: 3px solid transparent;
   }
   
-  .sidebar-brand {
-    flex: 1;
-  }
-}
-
-@media (max-width: 480px) {
-  .sidebar {
-    width: var(--sidebar-width);
-  }
-  
-  .sidebar-header {
-    padding: 1rem;
-  }
-  
-  .nav-item {
-    padding: 0.75rem 1rem;
-  }
-  
-  .sidebar-footer {
-    padding: 1rem;
+  .items {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    right: 0;
+    background: var(--ccm-color-surface);
+    border: 1px solid var(--ccm-color-border);
+    margin: 0;
+    z-index: 1000;
   }
 }
 </style> 
