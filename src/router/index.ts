@@ -1,6 +1,7 @@
 import { createRouter, createWebHistory } from 'vue-router'
 import Home from '../pages/Home.vue'
 import Stopwatch from '../pages/Stopwatch.vue'
+import Calculator from '../pages/Calculator.vue'
 
 
 const router = createRouter({
@@ -20,6 +21,11 @@ const router = createRouter({
       path: '/stopwatch',
       name : 'stopwatch',
       component : Stopwatch
+    },
+    {
+      path: '/calculator',
+      name : 'calculator',
+      component : Calculator
     },
   ],
 })
