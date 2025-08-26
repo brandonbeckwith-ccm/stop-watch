@@ -1,16 +1,9 @@
 <script setup lang="ts">
-import { useStopWatchComposable } from "../composables/useSLW";
+import { useStopWatchComposable } from "../composables/useSLWC";
 import { CButton } from "@ccm-engineering/ui-components";
 
-const {
-  isRunning,
-  laps,
-  formattedTime,
-  start,
-  stop,
-  reset,
-  recordLap,
-} = useStopWatchComposable();
+const { isRunning, laps, formattedTime, start, stop, reset, recordLap } =
+  useStopWatchComposable();
 </script>
 
 <template>

@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { CTag } from "@ccm-engineering/ui-components";
-import { useStopWatchComposable } from "../composables/useSLW";
+import { useStopWatchComposable } from "../composables/useSLWC";
 
 const { laps, formatTime } = useStopWatchComposable();
 </script>

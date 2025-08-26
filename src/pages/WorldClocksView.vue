@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { CButton, CMultipleSelect } from "@ccm-engineering/ui-components";
-import { useWorldClocksComposable } from "../composables/useSLW";
+import { useWorldClocksComposable } from "../composables/useSLWC";
 
 const {
   clocks,

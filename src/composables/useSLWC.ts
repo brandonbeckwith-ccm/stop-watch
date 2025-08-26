@@ -175,3 +175,65 @@ export function useWorldClocksComposable() {
         filteredTimezones,
     };
 }
+
+/* ---------------- CALCULATOR COMPOSABLE ---------------- */
+const currentInput = ref("");
+const result = ref("");
+const history = ref<{ input: string; result: string }[]>([]);
+
+function inputKey(key: string) {
+    currentInput.value += key;
+}
+
+function clearAll() {
+    currentInput.value = "";
+    result.value = "";
+}
+
+function calculate() {
+    try {
+        // Replace display symbols for eval
+        const expression = currentInput.value
+            .replace(/÷/g, "/")
+            .replace(/×/g, "*");
+
+        // eslint-disable-next-line no-eval
+        const evalResult = eval(expression);
+
+        result.value = String(evalResult);
+        history.value.unshift({ input: currentInput.value, result: result.value });
+    } catch (e) {
+        result.value = "Error";
+    }
+}
+
+function restoreHistory(item: { input: string; result: string }) {
+    currentInput.value = item.input;
+    result.value = item.result;
+}
+
+// Support keyboard typing like Google Calculator
+window.addEventListener("keydown", (e) => {
+    if (/[0-9+\-*/().]/.test(e.key)) {
+        inputKey(e.key);
+    } else if (e.key === "Enter") {
+        calculate();
+    } else if (e.key === "Backspace") {
+        currentInput.value = currentInput.value.slice(0, -1);
+    } else if (e.key.toLowerCase() === "c") {
+        clearAll();
+    }
+});
+
+export function useCalculatorComposable() {
+    return {
+        currentInput,
+        result,
+        history,
+        inputKey,
+        clearAll,
+        calculate,
+        restoreHistory,
+    };
+}
+

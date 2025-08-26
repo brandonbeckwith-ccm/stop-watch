@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { CTag } from "@ccm-engineering/ui-components";
 import { RouterLink, RouterView } from "vue-router";
 </script>
 
@@ -7,17 +8,25 @@ import { RouterLink, RouterView } from "vue-router";
     <!-- Header Navigation -->
     <header class="app-header">
       <nav class="nav">
-        <RouterLink to="/stopwatch" class="nav-link" active-class="active"
-          >Stopwatch</RouterLink
+        <CTag label="Stopwatch" theme="primary">
+          <RouterLink to="/stopwatch" class="nav-link" active-class="active"
+            >Stopwatch</RouterLink
+          >
+        </CTag>
+        <CTag label="Stopwatch" theme="primary">
+          <RouterLink to="/laps" class="nav-link" active-class="active"
+            >Laps</RouterLink
+          ></CTag
         >
-        <RouterLink to="/laps" class="nav-link" active-class="active"
-          >Laps</RouterLink
+        <CTag label="Stopwatch" theme="primary">
+          <RouterLink to="/worldClocks" class="nav-link" active-class="active"
+            >World Clocks</RouterLink
+          ></CTag
         >
-        <RouterLink to="/worldClocks" class="nav-link" active-class="active"
-          >World Clocks</RouterLink
-        >
-        <RouterLink to="/calculator" class="nav-link" active-class="active"
-          >Calculator</RouterLink
+        <CTag label="Stopwatch" theme="primary">
+          <RouterLink to="/calculator" class="nav-link" active-class="active"
+            >Calculator</RouterLink
+          ></CTag
         >
       </nav>
     </header>
@@ -43,7 +52,6 @@ import { RouterLink, RouterView } from "vue-router";
   flex-wrap: wrap;
 }
 .nav-link {
-  color: white;
   background: transparent;
   border: none;
   cursor: pointer;
@@ -54,7 +62,7 @@ import { RouterLink, RouterView } from "vue-router";
   text-decoration: none;
 }
 .nav-link:hover {
-  background: rgba(255, 255, 255, 0.2);
+  background: rgba(76, 0, 255, 0.2);
 }
 .active {
   background: #3498db;
