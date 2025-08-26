@@ -112,7 +112,6 @@ export function useWorldClock() {
   const clocks = ref([
     { id: 1, timezone: "local", label: "Local Time" },
     { id: 2, timezone: "America/New_York", label: "New York" },
-    { id: 3, timezone: "Asia/Kolkata", label: "India" },
   ]);
 
   const saveClocks = () => {

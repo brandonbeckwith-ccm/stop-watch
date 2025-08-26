@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { useStopwatch } from ".";
+import { useStopwatch } from "../helpers/clock";
 import { CButton, CTag } from "@ccm-engineering/ui-components";
 
 const { formattedTime, start, stop, reset, isRunning, lap, laps } =
@@ -83,10 +83,14 @@ const { formattedTime, start, stop, reset, isRunning, lap, laps } =
   align-items: flex-start;
   background: white;
   min-height: 100vh;
+  padding: 20px;
+  gap: 20px; 
+  flex-wrap: wrap; 
 }
+
 .card {
   background: #fff;
-  border: 2px solid #e0e0e0;
+  border: 1px solid #e0e0e0;
   border-radius: 18px;
   padding: 36px 32px 32px 32px;
   min-width: 320px;
@@ -95,13 +99,30 @@ const { formattedTime, start, stop, reset, isRunning, lap, laps } =
   display: flex;
   flex-direction: column;
   align-items: center;
+  box-sizing: border-box;
 }
+
 .stopwatch-card {
-  margin-right: 12px;
+  flex: 1;
 }
 .laps-card {
-  margin-left: 12px;
+  flex: 1;
 }
+
+.all-clocks-wrapper {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  justify-content: center;
+  width: 100%;
+  max-height: 300px; 
+  overflow-y: auto;
+  border: 1px solid #eee;
+  border-radius: 12px;
+  padding: 12px;
+  box-sizing: border-box;
+}
+
 
 .btn-row {
   display: flex;
@@ -115,5 +136,6 @@ const { formattedTime, start, stop, reset, isRunning, lap, laps } =
   display: flex;
   align-items: center;
   justify-content: flex-start;
+  width: 100%;
 }
 </style>

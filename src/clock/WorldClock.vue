@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { CButton, CMultipleSelect } from "@ccm-engineering/ui-components";
-import { useWorldClock } from ".";
-import Clock from "./Clock.vue";
+import { useWorldClock } from "../helpers/clock";
+import Clock from "../../src/clock/ClockDial.vue";
 
 const { timeZones, selectedTimeZone, addClock, clocks, removeClock } =
   useWorldClock();
@@ -59,10 +59,14 @@ const { timeZones, selectedTimeZone, addClock, clocks, removeClock } =
   align-items: flex-start;
   background: white;
   min-height: 100vh;
+  padding: 20px;
+  gap: 20px;
+  flex-wrap: wrap;
 }
+
 .card {
   background: #fff;
-  border: 2px solid #e0e0e0;
+  border: 1px solid #e0e0e0;
   border-radius: 18px;
   padding: 36px 32px 32px 32px;
   min-width: 320px;
@@ -71,26 +75,42 @@ const { timeZones, selectedTimeZone, addClock, clocks, removeClock } =
   display: flex;
   flex-direction: column;
   align-items: center;
+  box-sizing: border-box;
 }
+
 .stopwatch-card {
-  margin-right: 12px;
+  flex: 1;
 }
 .laps-card {
-  margin-left: 12px;
+  flex: 1;
 }
+
 .all-clocks-wrapper {
   display: flex;
   flex-direction: row;
   flex-wrap: wrap;
   justify-content: center;
-  height: 300px; 
+  width: 100%;
+  max-height: 300px; 
   overflow-y: auto;
   border: 1px solid #eee;
+  border-radius: 12px;
+  padding: 12px;
+  box-sizing: border-box;
 }
+
 .btn-row {
   display: flex;
-  gap: 10px;
+  gap: 16px;
   justify-content: center;
+  width: 100%;
+}
+
+.lap-row {
+  margin-bottom: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
   width: 100%;
 }
 </style>
