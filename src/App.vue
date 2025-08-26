@@ -16,6 +16,9 @@ import { RouterLink, RouterView } from "vue-router";
         <RouterLink to="/worldClocks" class="nav-link" active-class="active"
           >World Clocks</RouterLink
         >
+        <RouterLink to="/calculator" class="nav-link" active-class="active"
+          >Calculator</RouterLink
+        >
       </nav>
     </header>
 
