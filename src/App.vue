@@ -3,14 +3,7 @@ import {
   CAccordion,
   CCollapsibleSidebar,
   CIcon,
-  CIconLabel,
-  CTabs,
-  CTag,
 } from "@ccm-engineering/ui-components";
-import StopWatch from "./custom-component/StopWatch.vue";
-import WorldClock from "./custom-component/WorldClock.vue";
-import { tabs } from "./helpers";
-import RefPanel from "./custom-component/RefPanel.vue";
 import { ref } from "vue";
 const openSlideBar = ref(false);
 const clockAccordian = ref(false);
@@ -23,83 +16,95 @@ const selectTab = (tab: string) => {
 
 <template>
   <div id="app">
-    <CCollapsibleSidebar v-model="openSlideBar" closed-class="hello">
-      <div
-        class="nav-tab"
-        :class="{ active: selectedTab === 'home' }"
-        @click="selectTab('home')"
-      >
-        <div class="title">
-          <CIcon icon="fa-solid fa-house"></CIcon>
-          <span class="sub-title">Home</span>
-        </div>
-      </div>
-      <div class="nav-tab">
-        <CAccordion v-model="clockAccordian">
-          <template #title>
-            <CIcon icon="fa-solid fa-clock"></CIcon>
-            <span>Clock</span>
-          </template>
-          <template #content>
+    <div class="page-layout">
+      <div class="left-panel">
+        <CCollapsibleSidebar v-model="openSlideBar">
+          <router-link to="/">
             <div
-              class="sub-nav-tab"
-              :class="{ active: selectedTab === 'stopWatch' }"
-              @click="selectTab('stopWatch')"
+              class="nav-tab"
+              :class="{ active: selectedTab === 'home' }"
+              @click="selectTab('home')"
             >
               <div class="title">
-                <CIcon icon="fa-solid fa-stopwatch"></CIcon>
-                <span class="sub-title">Stop Watch</span>
+                <CIcon icon="fa-solid fa-house"></CIcon>
+                <span class="sub-title">Home</span>
               </div>
             </div>
-            <div
-              class="sub-nav-tab"
-              :class="{ active: selectedTab === 'worldClock' }"
-              @click="selectTab('worldClock')"
-            >
-              <div class="title">
+          </router-link>
+          <div class="nav-tab">
+            <CAccordion v-model="clockAccordian">
+              <template #title>
                 <CIcon icon="fa-solid fa-clock"></CIcon>
-                <span class="sub-title">World Clock</span>
+                <span>Clock</span>
+              </template>
+              <template #content>
+                <router-link to="/clock/stopwatch">
+                  <div
+                    class="sub-nav-tab"
+                    :class="{ active: selectedTab === 'stopWatch' }"
+                    @click="selectTab('stopWatch')"
+                  >
+                    <div class="title-head">
+                      <CIcon icon="fa-solid fa-stopwatch"></CIcon>
+                      <span class="sub-title">Stop Watch</span>
+                    </div>
+                  </div>
+                </router-link>
+                <router-link to="/clock/worldClock">
+                  <div
+                    class="sub-nav-tab"
+                    :class="{ active: selectedTab === 'worldClock' }"
+                    @click="selectTab('worldClock')"
+                  >
+                    <div class="title-head">
+                      <CIcon icon="fa-solid fa-clock"></CIcon>
+                      <span class="sub-title">World Clock</span>
+                    </div>
+                  </div>
+                </router-link>
+              </template>
+            </CAccordion>
+          </div>
+          <router-link to="/customRef">
+            <div
+              class="nav-tab"
+              :class="{ active: selectedTab === 'customRef' }"
+              @click="selectTab('customRef')"
+            >
+              <div class="title">
+                <CIcon icon="fa-solid fa-code"></CIcon>
+                <span class="sub-title">Custom Ref</span>
               </div>
             </div>
-          </template>
-        </CAccordion>
+          </router-link>
+          <router-link to="/calculator">
+            <div
+              class="nav-tab"
+              :class="{ active: selectedTab === 'calculator' }"
+              @click="selectTab('calculator')"
+            >
+              <div class="title">
+                <CIcon icon="fa-regular fa-calculator"></CIcon>
+                <span class="sub-title">Calculator</span>
+              </div>
+            </div>
+          </router-link>
+        </CCollapsibleSidebar>
       </div>
-      <div
-        class="nav-tab"
-        :class="{ active: selectedTab === 'customRef' }"
-        @click="selectTab('customRef')"
-      >
-        <div class="title">
-          <CIcon icon="fa-solid fa-code"></CIcon>
-          <span class="sub-title">Custom Ref</span>
-        </div>
+      <div class="right-panel">
+        <router-view />
       </div>
-    </CCollapsibleSidebar>
-    
-    <!-- <CTabs
-      selected="stopWatch"
-      theme="sky-blue"
-      :tabs="tabs"
-      :full-width="true"
-    >
-      <template #tab="{ activeValue }">
-        <div v-if="activeValue == 'stopWatch'">
-          <StopWatch></StopWatch>
-        </div>
-        <div v-if="activeValue == 'worldClock'">
-          <WorldClock></WorldClock>
-        </div>
-        <div v-if="activeValue == 'customRef'">
-          <RefPanel></RefPanel>
-        </div>
-      </template>
-    </CTabs> -->
+    </div>
   </div>
 </template>
 
 <style scoped lang="scss">
-.hello {
-  width: 300px;
+.page-layout {
+  display: flex;
+}
+.right-panel {
+  margin-left: 20px;
+  margin-top: 0px;
 }
 .nav-tab {
   padding: 15px;
@@ -113,25 +118,30 @@ const selectTab = (tab: string) => {
   padding: 0;
   margin-bottom: 5px;
 }
-.title {
+.title,
+.title-head {
   padding: 10px 0px 10px 24px;
   height: 50px;
   border-radius: 8px;
   border: 1px solid #ccc;
   transition: border-color 0.3s ease, background 0.3s ease;
 }
-
+.title-head {
+  padding: 10px 0px 10px 0px;
+}
 .nav-tab.active .title {
   border-color: darkblue;
   background: #f0f4ff;
 }
 
-.sub-nav-tab.active .title {
+.sub-nav-tab.active .title-head {
   border-color: darkblue;
   background: #f0f4ff;
 }
-
 .sub-title {
   margin-top: 5px;
+}
+a:-webkit-any-link {
+  text-decoration: none !important;
 }
 </style>
