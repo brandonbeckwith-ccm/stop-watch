@@ -2,7 +2,7 @@ import { ref, provide, inject } from "vue";
 
 const NAV_KEY = Symbol("navigation");
 
-export function createNavigation() {
+export const createNavigation = () => {
   const title = ref("");
   const icon = ref("");
   const status = ref("");
@@ -12,9 +12,9 @@ export function createNavigation() {
   const setStatus = (s: string) => (status.value = s);
 
   provide(NAV_KEY, { title, icon, status, setTitle, setIcon, setStatus });
-}
+};
 
-export function useNavigation() {
+export const useNavigation = () => {
   const nav = inject<{
     title: any;
     icon: any;
@@ -26,4 +26,4 @@ export function useNavigation() {
 
   if (!nav) throw new Error("Navigation not provided!");
   return nav;
-}
+};
