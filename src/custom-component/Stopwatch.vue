@@ -10,7 +10,7 @@ const { start, stop, reset, lap, formattedTime, formattedLaps, running } =
 const { setTitle, setIcon, setStatus } = useNavigation();
 setTitle("Stopwatch");
 setIcon("⏱️");
-setStatus("");
+setStatus("Elapsed: 00:00:00");
 
 watch(formattedTime, (t) => setStatus(`Elapsed: ${t}`));
 </script>

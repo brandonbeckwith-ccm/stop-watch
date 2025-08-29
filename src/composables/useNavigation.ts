@@ -16,9 +16,9 @@ export const createNavigation = () => {
 
 export const useNavigation = () => {
   const nav = inject<{
-    title: any;
+    title: string;
     icon: any;
-    status: any;
+    status: string;
     setTitle: (t: string) => void;
     setIcon: (i: string) => void;
     setStatus: (s: string) => void;
