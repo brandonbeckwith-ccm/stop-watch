@@ -9,7 +9,7 @@ const { expression, result, history, buttons, press } = useCalculator();
 const { setTitle, setIcon, setStatus } = useNavigation();
 setTitle("Calculator");
 setIcon("🧮");
-setStatus("Result:");
+setStatus("Result: 0");
 
 watch(result, (val) => setStatus(`Result: ${val}`));
 </script>
