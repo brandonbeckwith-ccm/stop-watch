@@ -90,7 +90,23 @@
   </div>
 </template>
 
-<script setup lang="ts"></script>
+<script setup lang="ts">
+import { onMounted, onUnmounted, nextTick } from "vue";
+import { useNavigation } from "../composables/useNavigation";
+
+const { setTitle, setIcon, setStatus, reset: resetNav } = useNavigation();
+
+onMounted(async () => {
+  setTitle("Home");
+  setIcon("🏠");
+  await nextTick();
+  setStatus("Welcome to the app");
+});
+
+onUnmounted(async () => {
+  await resetNav();
+});
+</script>
 
 <style scoped>
 .home {

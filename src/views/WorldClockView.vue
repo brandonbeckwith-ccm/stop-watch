@@ -1,6 +1,7 @@
 <script lang="ts" setup>
-import { ref } from "vue";
+import { ref, onMounted, onUnmounted, watch, nextTick } from "vue";
 import { useWorldclock } from "../composables/useWorldclock";
+import { useNavigation } from "../composables/useNavigation";
 import TimeCard from "../components/TimeCard.vue";
 import { CButton } from "@ccm-engineering/ui-components";
 
@@ -14,6 +15,45 @@ const {
 } = useWorldclock();
 
 const selectedTimezone = ref("");
+
+const { setTitle, setIcon, setStatus, reset: resetNav } = useNavigation();
+
+onMounted(async () => {
+  setTitle("World Clock");
+  setIcon("🌍");
+  await nextTick();
+  updateStatus();
+});
+
+const updateStatus = async () => {
+  await nextTick();
+  const clockCount = userClocksWithTime.value.length;
+  if (clockCount === 0) {
+    setStatus("No clocks added");
+  } else if (clockCount === 1) {
+    setStatus("1 clock active");
+  } else {
+    setStatus(`${clockCount} clocks active`);
+  }
+};
+
+watch(userClocksWithTime, async () => {
+  await updateStatus();
+}, { immediate: true, deep: true });
+
+const handleAddClock = async (timezone: string) => {
+  addClock(timezone);
+  await updateStatus();
+};
+
+const handleRemoveClock = async (timezone: string) => {
+  removeClock(timezone);
+  await updateStatus();
+};
+
+onUnmounted(async () => {
+  await resetNav();
+});
 </script>
 
 <template>
@@ -28,7 +68,7 @@ const selectedTimezone = ref("");
       </select>
       <CButton
         class="add-btn"
-        @click="() => addClock(selectedTimezone)"
+        @click="() => handleAddClock(selectedTimezone)"
         :disabled="
           !selectedTimezone || userTimezones.includes(selectedTimezone)
         "
@@ -45,7 +85,7 @@ const selectedTimezone = ref("");
         :day="city.day"
         :zone="city.zone"
         v-bind:show-remove="!defaultTimezones.includes(city.zone)"
-        @remove="() => removeClock(city.zone)"
+        @remove="() => handleRemoveClock(city.zone)"
       />
     </div>
   </div>

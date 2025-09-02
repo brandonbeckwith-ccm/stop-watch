@@ -9,6 +9,7 @@
     <ul>
       <li>Simple Stopwatch</li>
       <li>World Clock</li>
+      <li>Calculator</li>
       <li>Easy to use interface</li>
       <li>Fast and responsive design</li>
     </ul>
@@ -16,7 +17,23 @@
   </div>
 </template>
 
-<script setup lang="ts"></script>
+<script setup lang="ts">
+import { onMounted, onUnmounted, nextTick } from "vue";
+import { useNavigation } from "../composables/useNavigation";
+
+const { setTitle, setIcon, setStatus, reset: resetNav } = useNavigation();
+
+onMounted(async () => {
+  setTitle("About");
+  setIcon("ℹ️");
+  await nextTick();
+  setStatus("App information and features");
+});
+
+onUnmounted(async () => {
+  await resetNav();
+});
+</script>
 
 <style scoped>
 .about {
