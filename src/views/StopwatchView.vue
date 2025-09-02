@@ -1,11 +1,65 @@
 <script setup lang="ts">
-import { computed } from "vue";
+import { computed, onMounted, onUnmounted, watch, nextTick } from "vue";
 import { useStopwatch } from "../composables/useStopwatch";
+import { useNavigation } from "../composables/useNavigation";
 import { CButton, CTag } from "@ccm-engineering/ui-components";
 
-const { formattedTime, laps, formatTime, start, stop, reset, lap, intervalId } =
+const { elapsedTime, formattedTime, laps, formatTime, start, stop, reset, lap, intervalId } =
   useStopwatch();
 const isRunning = computed(() => intervalId.value !== null);
+
+
+const { setTitle, setIcon, setStatus, reset: resetNav } = useNavigation();
+
+onMounted(async () => {
+  setTitle("Stopwatch");
+  setIcon("⏱️");
+  await nextTick();
+  setStatus("Ready to start");
+});
+
+const updateStatus = async () => {
+  await nextTick();
+  if (isRunning.value) {
+    setStatus(`Running: ${formattedTime.value}`);
+  } else if (laps.value.length > 0) {
+    setStatus(`Stopped: ${formattedTime.value} (${laps.value.length} laps)`);
+  } else {
+    setStatus("Ready to start");
+  }
+};
+
+watch([intervalId, laps], async () => {
+  await updateStatus();
+}, { immediate: true });
+
+
+const handleStart = async () => {
+  start();
+
+  await nextTick();
+  setStatus(`Running: ${formattedTime.value}`);
+};
+
+const handleStop = async () => {
+  stop();
+  await updateStatus();
+};
+
+const handleReset = async () => {
+  reset();
+  await updateStatus();
+};
+
+const handleLap = async () => {
+  lap();
+  await updateStatus();
+};
+
+
+onUnmounted(async () => {
+  await resetNav();
+});
 </script>
 
 <template>
@@ -19,14 +73,14 @@ const isRunning = computed(() => intervalId.value !== null);
 
       <div class="control-buttons">
         <CButton
-          @click="start"
+          @click="handleStart"
           :disable="isRunning"
           label="Start"
           size="size-48"
         ></CButton>
-        <CButton @click="stop" :disable="!isRunning" label="Stop"></CButton>
-        <CButton @click="reset" label="Reset"></CButton>
-        <CButton @click="lap" :disable="!isRunning" label="Lap"></CButton>
+        <CButton @click="handleStop" :disable="!isRunning" label="Stop"></CButton>
+        <CButton @click="handleReset" label="Reset"></CButton>
+        <CButton @click="handleLap" :disable="!isRunning" label="Lap"></CButton>
       </div>
 
       <ul v-if="laps.length">
@@ -61,24 +115,27 @@ const isRunning = computed(() => intervalId.value !== null);
   position: relative;
   max-width: 100%;
   padding: 1rem;
-  background-color: #edf2f1;
-  border-radius: 12px;
+  background: linear-gradient(135deg, rgba(15, 23, 42, 0.88), rgba(30, 41, 59, 0.88));
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border-radius: 16px;
   text-align: center;
   justify-content: center;
-  border: 2px #165c7d solid;
+  border: 1px solid rgba(59, 130, 246, 0.25);
+  box-shadow: 0 14px 30px rgba(2, 6, 23, 0.32);
   margin-top: 80px;
 }
 
 h1 {
-  color: #ffffff;
-  background-color: #165c7d;
+  color: #e5e7eb;
+  background: linear-gradient(135deg, rgba(2, 6, 23, 0.65), rgba(30, 41, 59, 0.8));
   font-weight: 700;
   font-size: 30px;
   padding: 1rem 2rem;
   border-radius: 12px;
   margin-bottom: 1rem;
-  box-shadow: 0 4px 12px rgba(22, 92, 125, 0.4);
-  letter-spacing: 1.5px;
+  box-shadow: 0 8px 20px rgba(2, 6, 23, 0.35);
+  letter-spacing: 1.2px;
   text-transform: uppercase;
 }
 
@@ -88,32 +145,54 @@ h1 {
 }
 
 .time-card {
-  background-color: #165c7d;
-  color: white;
-  border-radius: 50px;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  background: rgba(255, 255, 255, 0.10);
+  color: #f3f4f6;
+  border-radius: 20px;
+  border: 1px solid rgba(148, 163, 184, 0.25);
+  box-shadow: 0 10px 24px rgba(2, 6, 23, 0.28), inset 0 0 24px rgba(255, 255, 255, 0.04);
   display: flex;
   justify-content: center;
   margin: 1rem;
-  font-size: 32px;
+  font-size: 34px;
   min-width: 300px;
-  padding: 1rem;
+  padding: 1.25rem 1.5rem;
 }
 
 h2 {
-  color: #ffffff;
-  font-size: 28px;
-  font-weight: 600;
-  letter-spacing: 1px;
+  color: #f9fafb;
+  font-size: 30px;
+  font-weight: 700;
+  letter-spacing: 0.5px;
   margin: 0;
+  text-shadow: 0 2px 10px rgba(59, 130, 246, 0.25);
 }
 
 .control-buttons {
   display: flex;
   justify-content: center;
-  gap: 1rem;
+  gap: 0.9rem;
   margin-bottom: 1.5rem;
   flex-wrap: wrap;
+}
+
+.control-buttons :deep(button) {
+  background: rgba(59, 130, 246, 0.16);
+  border: 1px solid rgba(59, 130, 246, 0.45);
+  color: #f8fafc;
+  border-radius: 999px;
+  padding: 0.6rem 1.1rem;
+  transition: all 0.22s ease;
+}
+
+.control-buttons :deep(button:hover) {
+  background: rgba(59, 130, 246, 0.24);
+  border-color: rgba(59, 130, 246, 0.6);
+  box-shadow: 0 10px 22px rgba(59, 130, 246, 0.28);
+}
+
+.control-buttons :deep(button[disabled]) {
+  opacity: 0.7;
+  cursor: not-allowed;
 }
 
 .control-button {
@@ -121,7 +200,7 @@ h2 {
 }
 
 ul {
-  padding: 0;
+  padding: 0.5rem 0.5rem 0.75rem;
   margin: 1.5rem auto;
   display: flex;
   flex-direction: column;
@@ -129,10 +208,12 @@ ul {
   max-height: 200px;
   overflow-y: auto;
   scroll-behavior: smooth;
-  border: 1px solid #c5e4ee;
+  border: 1px solid rgba(148, 163, 184, 0.28);
   border-radius: 12px;
-  background-color: #f4fafa;
-  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
+  background: rgba(255, 255, 255, 0.06);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  box-shadow: 0 8px 20px rgba(2, 6, 23, 0.24);
   width: 100%;
   max-width: 500px;
 }
@@ -141,34 +222,36 @@ ul {
   display: flex;
   justify-content: center;
   align-items: center;
-  width: 90%;
+  width: 92%;
   font-size: 16px;
-  font-weight: 500;
+  font-weight: 600;
   margin: 10px;
   padding: 0.75rem 1rem;
-  background-color: #165c7d;
-  color: #ffffff;
-  border-radius: 8px;
-  transition: background-color 0.3s ease, transform 0.2s ease;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.08);
+  background: linear-gradient(135deg, rgba(29, 78, 216, 0.95), rgba(37, 99, 235, 0.95));
+  color: #f8fafc;
+  border-radius: 10px;
+  transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
+  box-shadow: 0 6px 16px rgba(2, 6, 23, 0.35);
   text-align: center;
+  border: 1px solid rgba(59, 130, 246, 0.45);
 }
 
 .lap-tag:hover {
-  background-color: #134e6a;
   transform: translateY(-2px);
+  box-shadow: 0 10px 24px rgba(2, 6, 23, 0.45);
+  border-color: rgba(59, 130, 246, 0.65);
 }
 
 .instructions {
-  background-color: #f4fafa;
-  color: #165c7d;
-  border: 1px solid #c5e4ee;
+  background: rgba(255, 255, 255, 0.08);
+  color: #e5e7eb;
+  border: 1px solid rgba(148, 163, 184, 0.3);
   border-radius: 12px;
-  padding: 1.5rem;
+  padding: 1.25rem 1.5rem;
   margin-top: 1rem;
   font-size: 16px;
   line-height: 1.6;
-  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
+  box-shadow: 0 8px 20px rgba(2, 6, 23, 0.24);
   max-width: 600px;
   margin-left: auto;
   margin-right: auto;

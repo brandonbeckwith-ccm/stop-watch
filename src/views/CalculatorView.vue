@@ -1,31 +1,77 @@
 <script setup lang="ts">
-import { ref, onMounted, onBeforeUnmount } from "vue";
+import { ref, onMounted, onBeforeUnmount, onUnmounted, watch, nextTick } from "vue";
 import { useCalculator } from "../composables/useCalculator";
+import { useNavigation } from "../composables/useNavigation";
 
 const {expression,result,append,clear,backspace,calculate,history,clearHistory,} = useCalculator();
 const showHistory = ref(false);
+
+const { setTitle, setIcon, setStatus, reset: resetNav } = useNavigation();
+
+onMounted(async () => {
+  setTitle("Calculator");
+  setIcon("🧮");
+  await nextTick();
+  setStatus("Ready to calculate");
+});
+
+const updateStatus = async () => {
+  await nextTick();
+  if (result.value && result.value !== '0') {
+    setStatus(`Result: ${result.value}`);
+  } else if (expression.value) {
+    setStatus(`Expression: ${expression.value}`);
+  } else {
+    setStatus("Ready to calculate");
+  }
+};
+
+watch([expression, result], async () => {
+  await updateStatus();
+}, { immediate: true });
 
 const toggleHistory = () => {
   showHistory.value = !showHistory.value;
 }
 
-const loadFromHistory = (item: { expression: string; result: string }) => {
+const loadFromHistory = async (item: { expression: string; result: string }) => {
   expression.value = item.expression;
   result.value = item.result;
   showHistory.value = false;
+  await updateStatus();
 }
 
-const handleKeyDown = (e: KeyboardEvent) => {
+const handleAppend = async (value: string) => {
+  append(value);
+  await updateStatus();
+};
+
+const handleCalculate = async () => {
+  calculate();
+  await updateStatus();
+};
+
+const handleClear = async () => {
+  clear();
+  await updateStatus();
+};
+
+const handleBackspace = async () => {
+  backspace();
+  await updateStatus();
+};
+
+const handleKeyDown = async (e: KeyboardEvent) => {
   const allowedKeys = ["0","1","2","3","4","5","6","7","8","9","+","-","*","/",".","(",")"];
 
   if (allowedKeys.includes(e.key)) {
-    append(e.key);
+    await handleAppend(e.key);
   } else if (e.key === "Enter") {
-    calculate();
+    await handleCalculate();
   } else if (e.key === "Backspace") {
-    backspace();
+    await handleBackspace();
   } else if (e.key === "Escape") {
-    clear();
+    await handleClear();
   } else {
     e.preventDefault();
   }
@@ -37,6 +83,10 @@ onMounted(() => {
 
 onBeforeUnmount(() => {
   window.removeEventListener("keydown", handleKeyDown);
+});
+
+onUnmounted(async () => {
+  await resetNav();
 });
 </script>
 
@@ -53,31 +103,31 @@ onBeforeUnmount(() => {
       <button class="btn history-btn" @click="toggleHistory">History</button>
 
       <div class="buttons">
-        <button class="btn" @click="append('(')">(</button>
-        <button class="btn" @click="append(')')">)</button>
-        <button class="btn danger" @click="clear">Ac</button>
-        <button class="btn" @click="backspace">⌫</button>
+        <button class="btn" @click="handleAppend('(')">(</button>
+        <button class="btn" @click="handleAppend(')')">)</button>
+        <button class="btn danger" @click="handleClear">Ac</button>
+        <button class="btn" @click="handleBackspace">⌫</button>
 
-        <button class="btn" @click="append('/')">/</button>
-        <button class="btn" @click="append('*')">*</button>
-        <button class="btn" @click="append('-')">-</button>
-        <button class="btn" @click="append('+')">+</button>
+        <button class="btn" @click="handleAppend('/')">/</button>
+        <button class="btn" @click="handleAppend('*')">*</button>
+        <button class="btn" @click="handleAppend('-')">-</button>
+        <button class="btn" @click="handleAppend('+')">+</button>
 
-        <button class="btn" @click="append('7')">7</button>
-        <button class="btn" @click="append('8')">8</button>
-        <button class="btn" @click="append('9')">9</button>
-        <button class="btn equals" @click="calculate">=</button>
+        <button class="btn" @click="handleAppend('7')">7</button>
+        <button class="btn" @click="handleAppend('8')">8</button>
+        <button class="btn" @click="handleAppend('9')">9</button>
+        <button class="btn equals" @click="handleCalculate">=</button>
 
-        <button class="btn" @click="append('4')">4</button>
-        <button class="btn" @click="append('5')">5</button>
-        <button class="btn" @click="append('6')">6</button>
+        <button class="btn" @click="handleAppend('4')">4</button>
+        <button class="btn" @click="handleAppend('5')">5</button>
+        <button class="btn" @click="handleAppend('6')">6</button>
 
-        <button class="btn" @click="append('1')">1</button>
-        <button class="btn" @click="append('2')">2</button>
-        <button class="btn" @click="append('3')">3</button>
+        <button class="btn" @click="handleAppend('1')">1</button>
+        <button class="btn" @click="handleAppend('2')">2</button>
+        <button class="btn" @click="handleAppend('3')">3</button>
 
-        <button class="btn zero" @click="append('0')">0</button>
-        <button class="btn" @click="append('.')">.</button>
+        <button class="btn zero" @click="handleAppend('0')">0</button>
+        <button class="btn" @click="handleAppend('.')">.</button>
       </div>
     </div>
 

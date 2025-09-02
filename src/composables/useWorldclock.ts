@@ -10,7 +10,6 @@ export interface CityZone {
   name: string;
   zone: string;
 }
-
 interface CityWithTime extends CityZone {
   time: string;
   day: string;
