@@ -1,12 +1,28 @@
 <script setup lang="ts">
-</script>
+import NavigationBar from './components/NavigationBar.vue';
+import Sidebar from './components/Sidebar.vue';
 
+import { provideNavigation } from './composables/useNavigation';
+const navigation=provideNavigation()
+
+</script>
 <template>
-  <div id="app">
-    <h1>Stopwatch Assignment</h1>
-    <p>Build your stopwatch here! Check the README.md for requirements.</p>
-  </div>
+   <div id="app" class="ccm-new">
+    <NavigationBar/>
+      <Sidebar/>
+      <RouterView />
+    </div>
 </template>
 
-<style>
+<style scoped>
+.layout {
+  display: flex;
+  min-height: 100vh;
+}
+
+.main {
+  flex: 1;
+  padding: 2rem;
+  background: #f9f9f9;
+}
 </style>
