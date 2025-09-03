@@ -13,7 +13,7 @@ export const useStopwatch = () => {
   const startStopWatch = () => {
     if (intervalId.value) return;
     intervalId.value = setInterval(() => {
-      elapsedTime.value++;
+      elapsedTime.value += 10;
     }, 10);
   };
 

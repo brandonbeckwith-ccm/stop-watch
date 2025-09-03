@@ -19,7 +19,17 @@ const routes = [
         name: "World Clock",
         component: () => import("../components/WorldClock.vue"),
       },
+      {
+        path: "calculator",
+        name: "Calculator",
+        component: () => import("../components/Calculator.vue"),
+      },
     ],
+  },
+  {
+    path: "/:pathMatch(.*)*",
+    name: "NotFound",
+    component: () => import("../components/NotFound.vue"),
   },
 ];
 

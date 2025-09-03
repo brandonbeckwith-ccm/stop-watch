@@ -14,9 +14,9 @@ export const formatDateTime = (
 
 export const formatTimeInMs = (milliseconds: number): string => {
   const totalMs = Math.floor(milliseconds);
-  const minutes = Math.floor(totalMs / 6000);
-  const seconds = Math.floor((totalMs % 6000) / 100);
-  const centiseconds = Math.floor(totalMs % 100);
+  const minutes = Math.floor(totalMs / 60000);
+  const seconds = Math.floor((totalMs % 60000) / 1000);
+  const centiseconds = Math.floor((totalMs % 1000) / 10);
   return `${minutes.toString().padStart(2, "0")}:${seconds
     .toString()
     .padStart(2, "0")}:${centiseconds.toString().padStart(2, "0")}`;

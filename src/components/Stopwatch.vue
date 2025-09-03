@@ -2,6 +2,8 @@
 import { CButton, CTag } from "@ccm-engineering/ui-components";
 import { useStopwatch } from "../composables/useStopwatch";
 import { formatTimeInMs } from "../utils/formatter";
+import { onMounted } from "vue";
+import { useNavigation } from "../composables/useNavigation";
 
 const {
   elapsedTime,
@@ -12,6 +14,12 @@ const {
   triggerHandler,
   resetHandler,
 } = useStopwatch();
+
+const { setTitle } = useNavigation();
+
+onMounted(() => {
+  setTitle("Stopwatch");
+});
 </script>
 
 <template>

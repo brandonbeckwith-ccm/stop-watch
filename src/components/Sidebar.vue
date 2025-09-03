@@ -1,33 +1,36 @@
 <script setup lang="ts">
 import {
+  CAccordion,
   CButton,
   CIcon,
+  CIconLabel,
   CPopperSidePanel,
 } from "@ccm-engineering/ui-components";
-import type { ToolTipContent } from "@ccm-engineering/ui-components/dist/C-Popper-Side-Panel/C-Popper-Side-Panel-Types";
-import { ref } from "vue";
+import { ref, onMounted } from "vue";
 import { useRoute, useRouter } from "vue-router";
+import { useNavigation } from "../composables/useNavigation";
 
 const router = useRouter();
 const route = useRoute();
 const sidebarOpen = ref<boolean>(false);
-const tooltipContent: Omit<ToolTipContent, "title"> = {
-  items: [
-    { label: "Home", value: "/", icon: "fal fa-home" },
-    { label: "Stopwatch", value: "/stopwatch", icon: "fal fa-stopwatch" },
-    { label: "World Clock", value: "/worldclock", icon: "fal fa-globe" },
-  ],
-};
+const { navGroups, setActivePath, setTitle } = useNavigation();
 
-const handleAction = (value: string) => {
+const handleAction = (value: string, label?: string) => {
+  if (route.path === value) return;
   router.push(value);
+  setActivePath(value);
+  if (label) setTitle(label);
   sidebarOpen.value = false;
 };
+
+onMounted(() => {
+  setActivePath(route.path);
+});
 </script>
 
 <template>
   <div class="sidebar">
-    <CPopperSidePanel v-model="sidebarOpen" enable-side-panel>
+    <CPopperSidePanel v-model="sidebarOpen" enable-side-panel theme="mt-black">
       <template #trigger>
         <CIcon icon="fal fa-bars" size="large-64" hover />
       </template>
@@ -46,19 +49,28 @@ const handleAction = (value: string) => {
       </template>
 
       <template #content>
-        <CButton
-          v-for="(item, key) in tooltipContent.items"
-          :key="key"
-          :class="item?.class"
-          @click="handleAction(item.value)"
-          :icon-class="item?.icon"
-          :label="item.label"
-          :theme="route.path === item.value ? 'success' : 'primary'"
-          type="border"
-          size="size-48"
-          icon-position="left"
-          :disable="route.path === item.value"
-        />
+        <div v-for="(group, idx) in navGroups" :key="idx">
+          <CAccordion theme="cobalt">
+            <template #title>
+              <CIconLabel :icon="group.items[0].icon" :label="group.title" />
+            </template>
+            <template #body>
+              <CButton
+                v-for="(item, key) in group.items"
+                :key="key"
+                :class="item?.class"
+                @click="handleAction(item.value, item.label)"
+                :icon-class="item?.icon"
+                :label="item.label"
+                :theme="route.path === item.value ? 'mt-black' : 'neutral'"
+                type="border"
+                icon-position="left"
+                radius="xs"
+                size="size-40"
+              />
+            </template>
+          </CAccordion>
+        </div>
       </template>
     </CPopperSidePanel>
   </div>
@@ -70,6 +82,14 @@ const handleAction = (value: string) => {
   justify-content: flex-end;
 }
 .c-button {
-  margin-bottom: 20px;
+  margin-bottom: 12px;
+}
+
+.c-accordion {
+  margin: 12px 0;
+
+  .c-button {
+    margin-left: 12px;
+  }
 }
 </style>

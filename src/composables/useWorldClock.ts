@@ -14,12 +14,16 @@ export const useWorldClock = () => {
   const newTimezone = useDebouncedValidatedRef<string>("", 500, 5, (msg) => {
     errorMessage.value = msg;
   });
+
   const searchQuery = useDebouncedRef<string>("", 500);
 
   const filteredTimezones = computed(() => {
-    if (!searchQuery.value) return timezones.value;
-    return timezones.value.filter((tz) =>
-      getCityName(tz).toLowerCase().includes(searchQuery.value.toLowerCase())
+    if (!searchQuery.value)
+      return timezones.value.filter((t) => typeof t === "string");
+    return timezones.value.filter(
+      (tz) =>
+        typeof tz === "string" &&
+        getCityName(tz).toLowerCase().includes(searchQuery.value.toLowerCase())
     );
   });
 
@@ -40,6 +44,7 @@ export const useWorldClock = () => {
   const getTime = (tz: string) => formatDateTime(now.value, tz);
 
   const getCityName = (tz: string) => {
+    if (typeof tz !== "string") return "";
     const parts = tz.split("/");
     return parts[1]?.replace(/_/g, " ") || tz;
   };

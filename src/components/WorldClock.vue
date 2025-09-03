@@ -6,6 +6,8 @@ import {
   CSearchInput,
 } from "@ccm-engineering/ui-components";
 import { useWorldClock } from "../composables/useWorldClock";
+import { onMounted } from "vue";
+import { useNavigation } from "../composables/useNavigation";
 
 const {
   filteredTimezones,
@@ -18,6 +20,12 @@ const {
   addTimezone,
   removeTimezone,
 } = useWorldClock();
+
+const { setTitle } = useNavigation();
+
+onMounted(() => {
+  setTitle("World Clock");
+});
 </script>
 
 <template>
