@@ -1,10 +1,14 @@
 <script setup lang="ts">
+import NavigationBar from './components/NavigationBar.vue';
 import Sidebar from './components/Sidebar.vue';
 
+import { provideNavigation } from './composables/useNavigation';
+const navigation=provideNavigation()
 
 </script>
 <template>
    <div id="app" class="ccm-new">
+    <NavigationBar/>
       <Sidebar/>
       <RouterView />
     </div>

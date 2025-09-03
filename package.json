@@ -14,6 +14,7 @@
     "@ccm-engineering/ccm-common-style": "1.3.21",
     "@ccm-engineering/ccm-data-table": "1.3.6",
     "@ccm-engineering/ui-components": "2.0.1",
+    "@types/mathjs": "^9.4.1",
     "@vueuse/core": "^13.6.0",
     "dayjs": "^1.11.13",
     "vue": "^3.5.17",

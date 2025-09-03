@@ -1,13 +1,15 @@
 <script setup lang="ts">
 import { CButton, CTag } from "@ccm-engineering/ui-components";
 import { useStopwatch } from "../composables/useStopwatch";
-import { computed } from "vue";
+import { computed, onMounted, watch } from "vue";
 import Column from "primevue/column";
 import { CCMDataTable } from "@ccm-engineering/ccm-data-table";
+import { useNavigation } from "../composables/useNavigation";
 
 const { start, laps, elapsed, stop, reset, formatTime, lap, isRunning } =
   useStopwatch();
 
+const { setNavigation } = useNavigation();
 const handleStart = () => {
   start();
 };
@@ -23,42 +25,55 @@ const handleReset = () => {
 };
 
 const formattedTime = computed(() => formatTime(elapsed.value));
+
+onMounted(() => {
+  setNavigation(
+    "Stop Watch",
+    "fal fa-hourglass",
+    `timer: ${formattedTime.value}`
+  );
+});
+
+watch(formattedTime, (newVal) => {
+  setNavigation("Stop Watch", "fal fa-hourglass", `timer: ${newVal}`);
+});
 </script>
 
 <template>
   <div class="stopwatch-page">
     <div class="stopwatch-container">
-      <div class="header">
+      <!-- <div class="header">
         <h1>Stopwatch</h1>
-      </div>
+      </div> -->
       <CTag :label="formattedTime" size="medium-32" class="stopwatch-time" />
       <div class="buttons">
         <CButton
           label="Start"
           icon-class="fal fa-play"
-          class="btn start"
           @clicked="handleStart"
           :disabled="isRunning"
+          icon-position="left"
         />
         <CButton
           label="Stop"
           icon-class="fal fa-stop"
-          class="btn stop"
           @clicked="handleStop"
           theme="danger"
+          type="border"
+          icon-position="left"
         />
         <CButton
           label="Lap"
           icon-class="fal fa-flag"
-          class="btn lap"
           @clicked="handleLap"
+          icon-position="left"
         />
         <CButton
           label="Reset"
           icon-class="fal fa-xmark"
-          class="btn reset"
           @clicked="handleReset"
           type="border"
+          icon-position="left"
         />
       </div>
       <div class="laps">
@@ -97,7 +112,6 @@ h1 {
 }
 
 .stopwatch-time {
-
   margin: 0 auto;
 }
 
@@ -107,7 +121,6 @@ h1 {
   justify-content: center;
   margin: 30px 0 0 10px;
 }
-
 
 .laps {
   margin-top: 20px;

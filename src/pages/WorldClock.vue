@@ -9,9 +9,12 @@ import {
   CMultipleSelect,
   CSearchInput,
 } from "@ccm-engineering/ui-components";
-import { ref } from "vue";
+import { onMounted, ref } from "vue";
+import { useNavigation } from "../composables/useNavigation";
 
-const { clocks, addClock, removeClock, times ,search, filteredClocks} = useWorldClock();
+const { clocks, addClock, removeClock, times, search, filteredClocks } =
+  useWorldClock();
+const { setNavigation } = useNavigation();
 const isModalOpen = ref(false);
 const formInputTimeZone = ref("");
 const formInputlabel = ref("");
@@ -50,12 +53,15 @@ const timezoneMap: Record<string, string> = {
 
 const timezoneOptions = Object.keys(timezoneMap);
 
+onMounted(() => {
+  setNavigation("World Clock", "fal fa-globe", "");
+});
 </script>
 <template>
   <div class="page-header">
     <h1>World Clock</h1>
     <div class="btn">
-      <CSearchInput v-model="search" placeholder="Search Clocks..."/>
+      <CSearchInput v-model="search" placeholder="Search Clocks..." />
       <CButton label="Add Clock" @clicked="isModalOpen = true" size="size-32" />
     </div>
   </div>
@@ -119,7 +125,7 @@ const timezoneOptions = Object.keys(timezoneMap);
   justify-content: space-between;
 }
 
-.btn{
+.btn {
   display: flex;
   flex-direction: row;
   height: fit-content;

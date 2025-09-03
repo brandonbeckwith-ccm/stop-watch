@@ -1,10 +1,22 @@
 import { createRouter, createWebHistory } from "vue-router";
 
 const routes = [
-  { path: "/", component: () => import("../pages/Home.vue") },
-  { path: "/about", component: () => import("../pages/AboutUs.vue") },
-  { path: "/stopwatch", component: () => import("../pages/Stopwatch.vue") },
-  { path: "/worldclock", component: () => import("../pages/WorldClock.vue") },
+  { path: "/", name: "Home", component: () => import("../pages/Home.vue") },
+  {
+    path: "/stopwatch",
+    name: "Stopwatch",
+    component: () => import("../pages/Stopwatch.vue"),
+  },
+  {
+    path: "/worldclock",
+    name: "Worldclock",
+    component: () => import("../pages/WorldClock.vue"),
+  },
+  {
+    path: "/calculator",
+    name: "Calculator",
+    component: () => import("../pages/Calculator.vue"),
+  },
 ];
 
 const router = createRouter({
