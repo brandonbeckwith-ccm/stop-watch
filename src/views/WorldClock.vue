@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { ref, onMounted, computed } from "vue";
+import { ref, onMounted, computed, watch } from "vue";
 import dayjs from "dayjs";
 import utc from "dayjs/plugin/utc";
 import timezone from "dayjs/plugin/timezone";
@@ -11,6 +11,7 @@ import {
   CInput,
 } from "@ccm-engineering/ui-components";
 import { debouncedRef } from "../helper/customRef";
+import { useNavigation } from "../composables/useNavigation";
 
 dayjs.extend(utc);
 dayjs.extend(timezone);
@@ -92,6 +93,23 @@ const disable2 = computed(() => (inputNewClock.value ? true : false));
 
 useIntervalFn(updateTimes, 1000);
 onMounted(updateTimes);
+
+const { updateNavigation } = useNavigation();
+
+watch(currentTimes, () => {
+  const localTime = currentTimes.value["local"];
+  updateNavigation({
+    status: `Local Time: ${localTime}`,
+  });
+});
+
+onMounted(() => {
+  updateNavigation({
+    title: "World Clock",
+    icon: "fal fa-clock",
+    status: "Loading times...",
+  });
+});
 </script>
 
 <template>
@@ -154,7 +172,7 @@ onMounted(updateTimes);
   </div>
 </template>
 
-<style scoped>
+<style>
 .world-clock {
   font-family: Arial, sans-serif;
   padding: 1rem;

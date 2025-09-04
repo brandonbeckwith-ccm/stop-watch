@@ -1,5 +1,10 @@
 <script setup lang="ts">
+
+import { useRoute } from "vue-router";
+import { provideNavigation } from "./composables/useNavigation";
 import Navigation from "./constants/Navigation.vue";
+const route = useRoute();
+provideNavigation(route);
 </script>
 
 <template>
@@ -8,5 +13,3 @@ import Navigation from "./constants/Navigation.vue";
     <RouterView></RouterView>
   </div>
 </template>
-
-<style></style>

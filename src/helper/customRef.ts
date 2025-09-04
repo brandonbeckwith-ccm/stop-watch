@@ -1,4 +1,12 @@
-import { customRef } from "vue";
+import { customRef, ref, watch } from "vue";
+
+const savedTab = localStorage.getItem("selectedTab") || "clock";
+export const selectedTabValue = ref<string>(savedTab);
+
+watch(selectedTabValue, (newValue) => {
+  localStorage.setItem("selectedTab", newValue);
+});
+
 export const myRef = <T>(initialValue?: T | undefined) => {
   let value = initialValue;
   return customRef<T | undefined>((track, trigger) => {
@@ -15,7 +23,6 @@ export const myRef = <T>(initialValue?: T | undefined) => {
   });
 };
 
-// written just for refrence and it is not used anywhere.
 export const debouncedRef = <T>(initialValue: T, delay = 300) => {
   let value = initialValue;
   let timeout: ReturnType<typeof setTimeout>;

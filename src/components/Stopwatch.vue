@@ -1,18 +1,18 @@
-<script setup>
+<script setup lang="ts">
 import { CButton } from "@ccm-engineering/ui-components";
 import {computed, watch } from "vue";
 import {myRef} from '../helper/customRef'
 const startTime = myRef(0);
 const updatedTime = myRef(0);
-const difference = myRef(0);
+const difference = myRef<number>(0);
 const running = myRef(false);
-const interval = myRef(null);
-const laps = myRef([]);
+const interval = myRef<number>();
+const laps = myRef<string[]>([]);
 
 
 const toggleStartStop = () => {
   if (!running.value) {
-    startTime.value = Date.now() - difference.value;
+    startTime.value = Date.now() - (difference.value || 0);
     interval.value = setInterval(updateTime, 1);
   } else {
     clearInterval(interval.value);
@@ -22,17 +22,17 @@ const toggleStartStop = () => {
 
 const updateTime = () => {
   updatedTime.value = Date.now();
-  difference.value = updatedTime.value - startTime.value;
+  difference.value = updatedTime.value - (startTime.value || 0);
 };
 
 const formattedTime = computed(() => {
-  const minutes = Math.floor((difference.value / 1000 / 60) % 60);
-  const seconds = Math.floor((difference.value / 1000) % 60);
-  const milliseconds = Math.floor((difference.value % 1000) / 10);
+  const minutes = Math.floor(((difference.value || 0) / 1000 / 60) % 60);
+  const seconds = Math.floor(((difference.value || 0) / 1000) % 60);
+  const milliseconds = Math.floor(((difference.value || 0) % 1000) / 10);
   return `${pad(minutes)}:${pad(seconds)}:${pad(milliseconds)}`;
 });
 
-const pad = (time) => (time < 10 ? "0" + time : time);
+const pad = (time:number) => (time < 10 ? "0" + time : time);
 
 const resetTime = () => {
   clearInterval(interval.value);
@@ -42,7 +42,7 @@ const resetTime = () => {
 };
 
 const recordLap = () => {
-  if (running.value) {
+  if (running.value && laps.value) {
     const lapTime = formattedTime.value;
     laps.value.push(lapTime);
   }
@@ -91,7 +91,7 @@ watch(running, (newVal) => {
         :disabled="!running"
       />
     </div>
-    <div v-if="laps.length" class="lap-times">
+    <div v-if="laps?.length" class="lap-times">
       <h3>Laps:</h3>
       <ul>
         <li v-for="(lap, index) in laps" :key="index">
@@ -107,7 +107,6 @@ watch(running, (newVal) => {
 .stopwatch-container {
   text-align: center;
   padding: 20px;
-  /* background-color: #403a3a; */
   border-radius: 10px;
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
   max-width: 500px;
