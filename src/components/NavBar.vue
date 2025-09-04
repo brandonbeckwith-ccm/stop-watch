@@ -18,6 +18,8 @@ const closeMenu = () => (menuOpen.value = false)
       <RouterLink to="/" class="menu-link" @click="closeMenu">Home</RouterLink>
       <RouterLink to="/laps" class="menu-link" @click="closeMenu">Laps</RouterLink>
       <RouterLink to="/world-clock" class="menu-link" @click="closeMenu">World Clock</RouterLink>
+      <RouterLink to="/calculator" class="menu-link" @click="closeMenu">Calculator</RouterLink>
+      <RouterLink to="/refs" class="menu-link" @click="closeMenu">Refs Ex</RouterLink>
     </nav>
   </header>
 </template>
