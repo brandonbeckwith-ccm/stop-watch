@@ -1,17 +1,31 @@
 <script setup lang="ts">
-import { onMounted, ref } from "vue";
+import { onMounted, watch, watchEffect } from "vue";
 import Clock from "./Clock.vue";
-import {
-  CButton,
-  CInput,
-  CMultipleSelect,
-} from "@ccm-engineering/ui-components";
-import { useWorldClock } from "../helpers";
+import { CButton, CMultipleSelect } from "@ccm-engineering/ui-components";
+import { useWorldClock } from "../composables/worldClock";
+import { useNavBar } from "../composables/navBar";
 
-const {selectedTimeZone,getClocks,saveClocks,addClock,timeZones,removeClock,clocks} = useWorldClock()
-onMounted(()=>{
-    getClocks()
-})
+const {
+  selectedTimeZone,
+  getClocks,
+  addClock,
+  timeZones,
+  removeClock,
+  clocks,
+} = useWorldClock();
+
+const { setTitle, setIcon, setStatus } = useNavBar();
+setTitle("World Clock Page");
+setIcon("fa-solid fa-clock");
+setStatus(`No. of clocks:${clocks.value.length}`);
+
+watchEffect(() => {
+  setStatus(`No. of clocks: ${clocks.value.length}`);
+});
+
+onMounted(() => {
+  getClocks();
+});
 </script>
 <template>
   <div class="outer-wrapper">
