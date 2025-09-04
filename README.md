@@ -1,64 +1,84 @@
-# Stopwatch Assignment
-
-Build a fully functional stopwatch application with the following features:
-
-### Required Functionality
-- **Time Display**: Show elapsed time in `MM:SS:MS` format
-- **Start**: Begin timing
-- **Stop**: Pause timing (should be able to resume)
-- **Reset**: Reset timer to 00:00:00
-- **Lap**: Record lap times while the stopwatch is running
-
-### Technical Requirements
-- Work on a branch formatted as `feature/<your_name>` and push it when you're done
-- Use Vue 3 Composition API with `<script setup>`
-- Implement proper TypeScript typing
-- **Use CCM internal UI components** from the installed libraries
-- Ensure the UI is responsive and user-friendly
-- All UI code should be contained in the App.vue.
-    - You should still use composables as needed
-
-## Getting Started
-
-### 1. Setup Internal Package Registry
-
-First, create a `.npmrc` file in the project root with the following content:
-
-```
-registry=https://registry.npmjs.org/
-@ccm-engineering:registry=https://npm.pkg.github.com/
-//npm.pkg.github.com/:_authToken=${NPM_AUTH_TOKEN}
-legacy-peer-deps=true
-```
-
-Make sure you have the `NPM_AUTH_TOKEN` environment variable set with your GitHub personal access token. If you're unsure how to do this you can instead replace it with your AUTH token. Just make sure it's not committed!
-
-### 2. Install Required Internal Libraries
-
-Add the following CCM internal packages to your project:
-
+# Day 2: Git Merge Practice & Feature Development
+ 
+## Task 1: Git Conflict Resolution
+ 
+Find your assigned PR (one of PRs #15-26) where someone else's branch merges into your `-merge-practice` branch.
+ 
+**Your options for resolving conflicts:**
+ 
+- **Merge commit**: Standard merge with merge commit
+- **Rebase**: Replay commits to create linear history
+- **Squash merge**: Combine all commits into single commit
+ 
+Resolve the conflicts and complete the merge using your chosen strategy.
+ 
+## Task 2: Navigation Menu
+ 
+Rebase your day-2 branch from master and then add a navigation menu to your application.
+ 
+**Requirements:**
+ 
+- Must function as navigation (routing between views/sections)
+- Implementation approach is flexible (tabs, sidebar, header nav, etc.)
+- Must be responsive
+ 
+Commit and push your changes.
+ 
+## Task 3: World Clock Feature
+ 
+Add configurable world clocks that display current times in different timezones.
+ 
+**Requirements:**
+ 
+- **Default clocks:** User's local time (browser timezone), EST, and your current physical location timezone
+- Users can add and remove additional clocks
+- Clock preferences persist between page visits (use localStorage)
+ 
+**Required setup:**
+ 
 ```bash
-@ccm-engineering/ccm-common-style@1.3.21
-@ccm-engineering/base-ui-library@2.1.0
-@ccm-engineering/ui-components@2.0.1
+npm install @vueuse/core dayjs
 ```
+ 
+You're encouraged to use these libraries but not required to.
+ 
+Commit and push your changes.
+ 
+## Task 3: Vue Reactivity Resaerch on Closing UI project
+ 
+**Usage of Ref**
+ 
+ref for primitive state & DOM refs
 
-### 3. Install other dependencies:
+const selectedTab = ref('checklist')
+const detailSectionRef = ref<HTMLElement | null>(null)
+
+Use Case:
+~ selectedTab tracks which tab is active.
+~ detailSectionRef holds a reference to the detail panel DOM element for scroll-based synchronization.
+
+**Usage of Computed**
+
+const deficiencyCount = computed(() =>
+  Object.values(preClosingReviewData.value?.checklistItems ?? {}).filter(
+    (item) => !!item.deficiency
+  ).length
+)
+
+**Usage of Watcher**
+
+watch(
+  () => [isOpen.value, props.loanId],
+  async ([open, loanId]) => { ... },
+  { immediate: true }
+)
+## Final Step
+ 
+Once you've completed Tasks 2 and 3, raise a new PR from your `-day-2` branch against your original Day 1 branch (e.g., `feature/yourname-day-2` → `feature/yourname`). Take a moment to reflect and comment any observations or things you wish you did differently.
+ 
+## Development Setup
+ 
 ```bash
 npm install
-```
-
-### 4. Start the development server:
-```bash
 npm run dev
 ```
-
-## Tips
-
-- Consider using `setInterval` for time updates
-- Think about state management (refs, computed properties)
-- Format time display consistently
-- Handle edge cases (multiple starts, resets during timing, etc.)
-- Explore the CCM UI component libraries to see what components are available
-- Use CCM styling components for consistent design
-    - You will need to explore existing repos to understand how the imports should be structured
