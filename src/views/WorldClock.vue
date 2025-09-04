@@ -171,7 +171,6 @@ onMounted(() => {
     />
   </div>
 </template>
-
 <style>
 .world-clock {
   font-family: Arial, sans-serif;

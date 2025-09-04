@@ -92,6 +92,7 @@ watch(running, (newVal) => {
       />
     </div>
     <div v-if="laps?.length" class="lap-times">
+
       <h3>Laps:</h3>
       <ul>
         <li v-for="(lap, index) in laps" :key="index">
