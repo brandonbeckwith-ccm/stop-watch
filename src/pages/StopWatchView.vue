@@ -1,9 +1,22 @@
 <script setup lang="ts">
-import { useStopWatchComposable } from "../composables/useSLWC";
+import { onMounted, watch } from "vue";
+import { useNavigation, useStopWatchComposable } from "../composables/useSLWC";
 import { CButton } from "@ccm-engineering/ui-components";
 
 const { isRunning, laps, formattedTime, start, stop, reset, recordLap } =
   useStopWatchComposable();
+
+const nav = useNavigation();
+
+onMounted(() => {
+  nav.setTitle("Stopwatch");
+  nav.setIcon("fa-solid fa-stopwatch");
+  nav.setStatus(formattedTime.value);
+});
+
+watch(formattedTime, (v) => {
+  nav.setStatus(v);
+});
 </script>
 
 <template>
@@ -37,6 +50,7 @@ const { isRunning, laps, formattedTime, start, stop, reset, recordLap } =
       />
     </div>
   </div>
+  <RouterView />
 </template>
 
 <style scoped>

@@ -1,16 +1,22 @@
 <script setup lang="ts">
+import { onMounted, watch } from "vue";
+import { useCalculatorComposable, useNavigation } from "../composables/useSLWC";
 import { CButton } from "@ccm-engineering/ui-components";
-import { useCalculatorComposable } from "../composables/useSLWC";
 
-const {
-  currentInput,
-  result,
-  history,
-  inputKey,
-  clearAll,
-  calculate,
-  restoreHistory,
-} = useCalculatorComposable();
+const { currentInput, result, history, inputKey, clearAll, calculate, restoreHistory } =
+  useCalculatorComposable();
+
+const nav = useNavigation();
+
+onMounted(() => {
+  nav.setTitle("Calculator");
+  nav.setIcon("fa-solid fa-calculator");
+  nav.setStatus(result.value ? `= ${result.value}` : "Ready");
+});
+
+watch(result, (r) => {
+  nav.setStatus(r ? `= ${r}` : "Ready");
+});
 </script>
 
 <template>
@@ -23,33 +29,33 @@ const {
 
     <!-- Buttons -->
     <div class="buttons">
-      <CButton @click="clearAll" label="C" theme="neutral" />
-      <CButton @click="inputKey('(')" label="(" theme="neutral" />
-      <CButton @click="inputKey(')')" label=")" theme="neutral" />
+      <CButton @click="clearAll" label="C" theme="black" type="border" />
+      <CButton @click="inputKey('(')" label="(" theme="black" type="border" />
+      <CButton @click="inputKey(')')" label=")" theme="black" type="border" />
       <CButton @click="inputKey('/')" label="÷" theme="primary" />
 
-      <CButton @click="inputKey('7')" label="7" theme="neutral" />
-      <CButton @click="inputKey('8')" label="8" theme="neutral" />
-      <CButton @click="inputKey('9')" label="9" theme="neutral" />
+      <CButton @click="inputKey('7')" label="7" theme="black" type="border" />
+      <CButton @click="inputKey('8')" label="8" theme="black" type="border" />
+      <CButton @click="inputKey('9')" label="9" theme="black" type="border" />
       <CButton @click="inputKey('*')" label="×" theme="primary" />
 
-      <CButton @click="inputKey('4')" label="4" theme="neutral" />
-      <CButton @click="inputKey('5')" label="5" theme="neutral" />
-      <CButton @click="inputKey('6')" label="6" theme="neutral" />
+      <CButton @click="inputKey('4')" label="4" theme="black" type="border" />
+      <CButton @click="inputKey('5')" label="5" theme="black" type="border" />
+      <CButton @click="inputKey('6')" label="6" theme="black" type="border" />
       <CButton @click="inputKey('-')" label="−" theme="primary" />
 
-      <CButton @click="inputKey('1')" label="1" theme="neutral" />
-      <CButton @click="inputKey('2')" label="2" theme="neutral" />
-      <CButton @click="inputKey('3')" label="3" theme="neutral" />
+      <CButton @click="inputKey('1')" label="1" theme="black" type="border" />
+      <CButton @click="inputKey('2')" label="2" theme="black" type="border" />
+      <CButton @click="inputKey('3')" label="3" theme="black" type="border" />
       <CButton @click="inputKey('+')" label="+" theme="primary" />
 
       <CButton
         @click="inputKey('0')"
         label="0"
         class="col-span-2"
-        theme="neutral"
+        theme="black" type="border"
       />
-      <CButton @click="inputKey('.')" label="." theme="neutral" />
+      <CButton @click="inputKey('.')" label="." theme="black" type="border" />
       <CButton @click="calculate" label="=" theme="primary" />
     </div>
 

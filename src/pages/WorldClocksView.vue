@@ -1,6 +1,7 @@
 <script setup lang="ts">
+import { onMounted, onUnmounted, watch } from "vue";
+import { useNavigation, useWorldClocksComposable } from "../composables/useSLWC";
 import { CButton, CMultipleSelect } from "@ccm-engineering/ui-components";
-import { useWorldClocksComposable } from "../composables/useSLWC";
 
 const {
   clocks,
@@ -12,6 +13,32 @@ const {
   redo,
   filteredTimezones,
 } = useWorldClocksComposable();
+
+const nav = useNavigation();
+let intervalId: number | null = null;
+
+function updateStatus() {
+  if (clocks.value.length > 0) {
+    nav.setStatus(`${clocks.value.length} clocks • ${getTime(clocks.value[0])}`);
+  } else {
+    nav.setStatus("No clocks");
+  }
+}
+
+onMounted(() => {
+  nav.setTitle("World Clocks");
+  nav.setIcon("fa-solid fa-globe");
+  updateStatus();
+  intervalId = window.setInterval(updateStatus, 1000);
+});
+
+onUnmounted(() => {
+  if (intervalId) window.clearInterval(intervalId);
+});
+
+watch(clocks, () => {
+  updateStatus();
+});
 </script>
 
 <template>

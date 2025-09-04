@@ -1,4 +1,7 @@
-import { ref, computed, watch, onMounted, onUnmounted } from "vue";
+import { useStorage } from "@vueuse/core";
+import moment from "moment-timezone";
+import { ref, computed, onMounted, onUnmounted, readonly, provide, inject } from "vue";
+import { useToast } from 'vue-toastification';
 
 const isRunning = ref(false);
 const elapsedTime = ref(0);
@@ -49,7 +52,6 @@ function formatTime(num: number) {
     )}.${String(milliseconds).padStart(3, "0")}`;
 }
 
-
 /* ---------------- STOPWATCH COMPOSABLE ---------------- */
 export function useStopWatchComposable() {
     return {
@@ -68,43 +70,15 @@ export function useStopWatchComposable() {
 
 /* ---------------- WORLD CLOCKS COMPOSABLE ---------------- */
 export function useWorldClocksComposable() {
-    const clocks = ref<string[]>([]);
+
+    const clocks = useStorage<string[]>("world-clocks:clocks", []);
+    const history = useStorage<string[][]>("world-clocks:history", []);
+    const future = useStorage<string[][]>("world-clocks:future", []);
+
     const validatedClock = ref<string | null>(null);
+    const tick = ref(Date.now());
 
-    const history = ref<string[][]>([]);
-    const future = ref<string[][]>([]);
-
-    const timezones = Intl.supportedValuesOf("timeZone");
-
-    const saved = localStorage.getItem("worldClocksState");
-    if (saved) {
-        try {
-            const parsed = JSON.parse(saved);
-            clocks.value = parsed.clocks || [];
-            history.value = parsed.history || [];
-            future.value = parsed.future || [];
-        } catch {
-            clocks.value = [];
-            history.value = [];
-            future.value = [];
-        }
-    }
-
-    // Persist state whenever it changes
-    watch(
-        [clocks, history, future],
-        ([c, h, f]) => {
-            localStorage.setItem(
-                "worldClocksState",
-                JSON.stringify({
-                    clocks: c,
-                    history: h,
-                    future: f,
-                })
-            );
-        },
-        { deep: true }
-    );
+    const timezones = moment.tz.names();
 
     const addClock = () => {
         if (validatedClock.value && !clocks.value.includes(validatedClock.value)) {
@@ -121,7 +95,6 @@ export function useWorldClocksComposable() {
         future.value = [];
     };
 
-    const tick = ref(Date.now());
     let intervalId: number | null = null;
 
     onMounted(() => {
@@ -135,13 +108,8 @@ export function useWorldClocksComposable() {
     });
 
     const getTime = (tz: string) => {
-        tick.value;
-        return new Date().toLocaleTimeString("en-US", {
-            timeZone: tz,
-            hour: "2-digit",
-            minute: "2-digit",
-            second: "2-digit",
-        });
+        tick.value; // reactive trigger
+        return moment().tz(tz).format("hh:mm:ss A");
     };
 
     const undo = () => {
@@ -161,7 +129,7 @@ export function useWorldClocksComposable() {
     };
 
     const filteredTimezones = computed(() =>
-        timezones.filter((tz: any) => !clocks.value.includes(tz))
+        timezones.filter((tz) => !clocks.value.includes(tz))
     );
 
     return {
@@ -177,55 +145,66 @@ export function useWorldClocksComposable() {
 }
 
 /* ---------------- CALCULATOR COMPOSABLE ---------------- */
-const currentInput = ref("");
-const result = ref("");
-const history = ref<{ input: string; result: string }[]>([]);
-
-function inputKey(key: string) {
-    currentInput.value += key;
-}
-
-function clearAll() {
-    currentInput.value = "";
-    result.value = "";
-}
-
-function calculate() {
-    try {
-        // Replace display symbols for eval
-        const expression = currentInput.value
-            .replace(/÷/g, "/")
-            .replace(/×/g, "*");
-
-        // eslint-disable-next-line no-eval
-        const evalResult = eval(expression);
-
-        result.value = String(evalResult);
-        history.value.unshift({ input: currentInput.value, result: result.value });
-    } catch (e) {
-        result.value = "Error";
-    }
-}
-
-function restoreHistory(item: { input: string; result: string }) {
-    currentInput.value = item.input;
-    result.value = item.result;
-}
-
-// Support keyboard typing like Google Calculator
-window.addEventListener("keydown", (e) => {
-    if (/[0-9+\-*/().]/.test(e.key)) {
-        inputKey(e.key);
-    } else if (e.key === "Enter") {
-        calculate();
-    } else if (e.key === "Backspace") {
-        currentInput.value = currentInput.value.slice(0, -1);
-    } else if (e.key.toLowerCase() === "c") {
-        clearAll();
-    }
-});
-
 export function useCalculatorComposable() {
+    const currentInput = ref("");
+    const result = ref("");
+    const history = ref<{ input: string; result: string }[]>([]);
+    const toast = useToast()
+
+    function inputKey(key: string) {
+        currentInput.value += key;
+    }
+
+    function clearAll() {
+        currentInput.value = "";
+        result.value = "";
+    }
+
+    function calculate() {
+        try {
+            if (!currentInput.value.trim()) {
+                toast.error("Empty expression");
+                return;
+            }
+
+            const expression = currentInput.value
+                .replace(/÷/g, "/")
+                .replace(/×/g, "*");
+
+            // eslint-disable-next-line no-eval
+            const evalResult = eval(expression);
+
+            if (!isFinite(evalResult)) {
+                toast.error("Division by zero is not possible");
+                return
+            }
+
+            result.value = String(evalResult);
+            history.value.unshift({ input: currentInput.value, result: result.value });
+        } catch (err: any) {
+            result.value = "";
+            toast.error(err.message || "Invalid calculation");
+        }
+    }
+
+    function restoreHistory(item: { input: string; result: string }) {
+        currentInput.value = item.input;
+        result.value = item.result;
+    }
+
+    // Support keyboard typing like Google Calculator
+    window.addEventListener("keydown", (e) => {
+        if (/[0-9+\-*/().]/.test(e.key)) {
+            inputKey(e.key);
+        } else if (e.key === "Enter") {
+            calculate();
+        } else if (e.key === "Backspace") {
+            currentInput.value = currentInput.value.slice(0, -1);
+        } else if (e.key.toLowerCase() === "c") {
+            clearAll();
+        }
+    });
+
     return {
         currentInput,
         result,
@@ -237,3 +216,42 @@ export function useCalculatorComposable() {
     };
 }
 
+const NAV_KEY = Symbol("nav-service");
+
+/* ---------------- NAVIGATION USING PROVIDE/INJECT ---------------- */
+export function provideNavigation() {
+    const _title = ref<string>("");
+    const _icon = ref<string>("");
+    const _status = ref<string>("");
+
+    const api = {
+        title: readonly(_title),
+        icon: readonly(_icon),
+        status: readonly(_status),
+        setTitle(title: string) {
+            _title.value = title;
+        },
+        setIcon(icon: string) {
+            _icon.value = icon;
+        },
+        setStatus(status: string) {
+            _status.value = status;
+        },
+        reset() {
+            _title.value = "";
+            _icon.value = "";
+            _status.value = "";
+        },
+    };
+
+    provide(NAV_KEY, api);
+    return api;
+}
+
+export function useNavigation() {
+    const nav = inject(NAV_KEY) as ReturnType<typeof provideNavigation> | undefined;
+    if (!nav) {
+        throw new Error("useNavigation must be used after provideNavigation()");
+    }
+    return nav;
+}
