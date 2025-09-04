@@ -5,17 +5,19 @@
 Find your assigned PR (one of PRs #15-26) where someone else's branch merges into your `-merge-practice` branch.
 
 **Your options for resolving conflicts:**
+
 - **Merge commit**: Standard merge with merge commit
-- **Rebase**: Replay commits to create linear history  
+- **Rebase**: Replay commits to create linear history
 - **Squash merge**: Combine all commits into single commit
 
 Resolve the conflicts and complete the merge using your chosen strategy.
 
 ## Task 2: Navigation Menu
 
-Rebase your day-2 branch from master and then add a navigation menu to your application. 
+Rebase your day-2 branch from master and then add a navigation menu to your application.
 
 **Requirements:**
+
 - Must function as navigation (routing between views/sections)
 - Implementation approach is flexible (tabs, sidebar, header nav, etc.)
 - Must be responsive
@@ -27,11 +29,13 @@ Commit and push your changes.
 Add configurable world clocks that display current times in different timezones.
 
 **Requirements:**
+
 - **Default clocks:** User's local time (browser timezone), EST, and your current physical location timezone
 - Users can add and remove additional clocks
 - Clock preferences persist between page visits (use localStorage)
 
 **Required setup:**
+
 ```bash
 npm install @vueuse/core dayjs
 ```
@@ -39,6 +43,38 @@ npm install @vueuse/core dayjs
 You're encouraged to use these libraries but not required to.
 
 Commit and push your changes.
+
+## Task 3: Vue Reactivity Resaerch on Closing UI project
+
+**Usage of Ref**
+A users ref which is used in userListing page
+
+Ex:- const users = ref<User[]>([])
+Type:- 
+export interface User {
+employeeIdentifier: string
+employeeName: string
+roleName: string
+emailAddress: string
+workPhoneNumber: string
+roles: string[]
+groupNames: string
+assignedBranchNumbers: string[]
+branchIdentifier: string
+branchName: string
+branchNumber: string
+userName: string
+[key: string]: string | number | string[] | undefined
+}
+
+**Usage of Computed**
+Returens true if user Details are still loading
+Ex:- const isLoading = computed(() => isGetUsersDataLoading.value)
+
+**Usage of watch**
+Calls invokeGetUsersData method when tableFilters gets updated
+Ex:- watch(tableFilters, () => invokeGetUsersData(), { deep: true })
+
 
 ## Final Step
 

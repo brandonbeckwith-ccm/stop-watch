@@ -6,10 +6,17 @@ import {
   useThrottledRef,
   useValidatedRef,
 } from "../helpers/customRef";
+import { useNavBar } from "../composables/navBar";
 const debouncedInput = useDebouncedRef("", 500);
 const validatedInput = useValidatedRef("", (v) => v.length >= 3);
 const throttledInput = useThrottledRef("", 1000);
 const { state, history } = useHistoryRef<string>("", 5);
+
+const {setTitle,setIcon,setStatus}=useNavBar()
+setTitle('Custom Ref')
+setIcon('fa-solid fa-code')
+setStatus(`Types of custom ref`)
+
 </script>
 <template>
   <div class="ref-demo-wrapper">

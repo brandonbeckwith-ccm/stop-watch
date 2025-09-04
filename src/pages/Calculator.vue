@@ -1,8 +1,19 @@
 <script setup lang="ts">
+import { watch } from "vue";
+import { useNavBar } from "../composables/navBar";
 import { useCalculator } from "../helpers/calculator";
 
 const { screen, addNum, addOp, clear, cross, getSolution, history ,handleSolution} =
   useCalculator();
+const {setTitle,setIcon,setStatus}=useNavBar()
+setTitle('Calclator')
+setIcon("fa-regular fa-calculator")
+setStatus(`Result : ${screen.value}`)
+
+watch(screen,()=>{
+setStatus(`Result : ${screen.value}`)
+
+})
 </script>
 
 <template>

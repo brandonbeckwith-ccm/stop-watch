@@ -1,6 +1,8 @@
 <script setup lang="ts">
 import { CButton, CIcon, CModal } from "@ccm-engineering/ui-components";
 import { useStopWatch } from "../composables/stopwatch";
+import { useNavBar } from '../composables/navBar';
+import { watch } from "vue";
 
 const {
   start,
@@ -13,6 +15,17 @@ const {
   getTotal,
   showModal,
 } = useStopWatch();
+
+
+const {setTitle,setIcon,setStatus}=useNavBar()
+setTitle('Stop Watch Page')
+setIcon('fa-solid fa-stopwatch')
+setStatus(`Timer Count ${timeDisplay.value}`)
+
+watch(timeDisplay,()=>{
+  setStatus(`Timer Count ${timeDisplay.value}`)
+ })
+
 </script>
 <template>
   <CModal

@@ -5,6 +5,9 @@ import {
   CIcon,
 } from "@ccm-engineering/ui-components";
 import { ref } from "vue";
+import { initateNavBar } from "./composables/navBar";
+import NavBar from "./custom-component/NavBar.vue";
+initateNavBar();
 const openSlideBar = ref(false);
 const clockAccordian = ref(false);
 const selectedTab = ref<string | null>(null);
@@ -92,7 +95,8 @@ const selectTab = (tab: string) => {
         </CCollapsibleSidebar>
       </div>
       <div class="right-panel">
-        <router-view />
+        <NavBar></NavBar>
+        <router-view/>
       </div>
     </div>
   </div>
