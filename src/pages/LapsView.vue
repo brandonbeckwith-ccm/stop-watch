@@ -1,9 +1,25 @@
 <script setup lang="ts">
+import { onMounted, watch } from "vue";
+import { useNavigation, useStopWatchComposable } from "../composables/useSLWC";
 import { CTag } from "@ccm-engineering/ui-components";
-import { useStopWatchComposable } from "../composables/useSLW";
 
 const { laps, formatTime } = useStopWatchComposable();
+const nav = useNavigation();
+
+onMounted(() => {
+  nav.setTitle("Laps");
+  nav.setIcon("fa-solid fa-list");
+  nav.setStatus(`${laps.length} laps`);
+});
+
+watch(
+  () => laps.length,
+  (len) => {
+    nav.setStatus(`${len} laps`);
+  }
+);
 </script>
+
 <template>
   <div class="laps-view">
     <h2>Laps</h2>
