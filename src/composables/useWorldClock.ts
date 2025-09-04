@@ -1,9 +1,10 @@
 import { ref } from "vue";
+import { useStorage } from "@vueuse/core";
 
 export const useWorldClock = () => {
   const currentZone = ref("");
 
-  const clockList = ref([
+  const clockList = useStorage("user_clocks", [
     { id: 1, zone: "local", title: "Local Time" },
     { id: 2, zone: "America/New_York", title: "New York" },
     { id: 3, zone: "Asia/Kolkata", title: "India" },
@@ -21,22 +22,6 @@ export const useWorldClock = () => {
     { title: "India", value: "Asia/Kolkata" },
   ];
 
-  const storeClocks = () => {
-    localStorage.setItem("user_clocks", JSON.stringify(clockList.value));
-    console.debug("Clocks stored successfully");
-  };
-
-  const loadClocks = () => {
-    const data = localStorage.getItem("user_clocks");
-    if (data) {
-      try {
-        clockList.value = JSON.parse(data);
-      } catch (err) {
-        console.warn("Corrupted saved data, using defaults.");
-      }
-    }
-  };
-
   const insertClock = () => {
     if (!currentZone.value) return;
 
@@ -51,21 +36,17 @@ export const useWorldClock = () => {
         title: zoneItem.title,
       });
       currentZone.value = "";
-      storeClocks();
     }
   };
 
   const deleteClock = (id: number) => {
     clockList.value = clockList.value.filter((c) => c.id !== id);
-    storeClocks();
   };
 
   return {
     currentZone,
     clockList,
     availableZones,
-    storeClocks,
-    loadClocks,
     insertClock,
     deleteClock,
   };

@@ -9,22 +9,18 @@ import {
   CIcon,
 } from "@ccm-engineering/ui-components";
 import { useWorldClock } from "../composables/useWorldClock";
+import { useNavigation } from "../composables/useNavigation";
 
 dayjs.extend(utc);
 dayjs.extend(timezone);
 
-const {
-  currentZone,
-  clockList,
-  availableZones,
-  insertClock,
-  deleteClock,
-  loadClocks,
-} = useWorldClock();
+const { setTitle, setIcon, setStatus } = useNavigation();
+setTitle("World Clock");
+setIcon("🌍");
+setStatus("Tracking global zones");
 
-onMounted(() => {
-  loadClocks();
-});
+const { currentZone, clockList, availableZones, insertClock, deleteClock } =
+  useWorldClock();
 
 const times = ref<{ [key: number]: string }>({});
 
@@ -39,6 +35,7 @@ const updateTimes = () => {
             .format("HH:mm:ss");
   });
   times.value = now;
+  setStatus(`Showing ${clockList.value.length} clocks`);
 };
 
 let timer: number | undefined;
@@ -57,7 +54,6 @@ onUnmounted(() => {
   <h1>World Clock Assignment</h1>
 
   <div class="world-clock">
-    <!-- Add clock controls -->
     <div class="controls">
       <CMultipleSelect
         :options="availableZones"
@@ -75,7 +71,6 @@ onUnmounted(() => {
       />
     </div>
 
-    <!-- Display clocks -->
     <div class="clocks">
       <div v-for="clock in clockList" :key="clock.id" class="clock">
         <div class="delete-icon">

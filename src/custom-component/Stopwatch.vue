@@ -1,9 +1,18 @@
 <script setup lang="ts">
 import { CButton, CTag } from "@ccm-engineering/ui-components";
 import { useStopwatch } from "../composables/useStopWatch";
+import { watch } from "vue";
+import { useNavigation } from "../composables/useNavigation";
 
 const { start, stop, reset, lap, formattedTime, formattedLaps, running } =
   useStopwatch();
+
+const { setTitle, setIcon, setStatus } = useNavigation();
+setTitle("Stopwatch");
+setIcon("⏱️");
+setStatus("Elapsed: 00:00:00");
+
+watch(formattedTime, (t) => setStatus(`Elapsed: ${t}`));
 </script>
 
 <template>
@@ -47,5 +56,9 @@ const { start, stop, reset, lap, formattedTime, formattedLaps, running } =
 .laps {
   margin-top: 2rem;
   text-align: left;
+}
+
+li {
+  margin-top: 0.4rem;
 }
 </style>

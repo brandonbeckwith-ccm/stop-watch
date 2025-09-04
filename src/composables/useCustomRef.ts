@@ -1,6 +1,6 @@
-import { customRef } from "vue";
+import { customRef, type Ref } from "vue";
 
-export const debouncedRef = <T>(startValue: T, wait = 300) => {
+export const debouncedRef = <T>(startValue: T, wait = 300): Ref<T> => {
   let state = startValue;
   let timer: ReturnType<typeof setTimeout> | null = null;
 
@@ -19,7 +19,10 @@ export const debouncedRef = <T>(startValue: T, wait = 300) => {
   }));
 };
 
-export const validatedRef = <T>(startValue: T, check: (val: T) => boolean) => {
+export const validatedRef = <T>(
+  startValue: T,
+  check: (val: T) => boolean
+): Ref<T> => {
   let state = startValue;
 
   return customRef<T>((track, trigger) => ({
@@ -42,7 +45,7 @@ export const historyRef = <T>(startValue: T, limit = 5) => {
   let state = startValue;
   const past: T[] = [startValue];
 
-  return customRef<T>((track, trigger) => ({
+  const ref = customRef<T>((track, trigger) => ({
     get: () => {
       track();
       return state;
@@ -54,9 +57,11 @@ export const historyRef = <T>(startValue: T, limit = 5) => {
       trigger();
     },
   }));
+
+  return { ref, past };
 };
 
-export const throttledRef = <T>(startValue: T, gap = 500) => {
+export const throttledRef = <T>(startValue: T, gap = 500): Ref<T> => {
   let state = startValue;
   let last = 0;
 

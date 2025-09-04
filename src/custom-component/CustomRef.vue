@@ -5,10 +5,16 @@ import {
   historyRef,
   throttledRef,
 } from "../composables/useCustomRef";
+import { useNavigation } from "../composables/useNavigation";
+
+const { setTitle, setIcon, setStatus } = useNavigation();
+setTitle("Custom Ref");
+setIcon("🔧");
+setStatus("Working with custom refs");
 
 const inputDebounced = debouncedRef("", 500);
 const inputValidated = validatedRef("", (val) => val.trim().length >= 3);
-const inputHistory = historyRef("", 5);
+const { ref: inputHistory, past: historyList } = historyRef("", 5);
 const inputThrottled = throttledRef("", 1000);
 </script>
 
@@ -41,6 +47,12 @@ const inputThrottled = throttledRef("", 1000);
       <p>
         Current Value: <strong>{{ inputHistory }}</strong>
       </p>
+      <h4>History:</h4>
+      <ul>
+        <li v-for="(item, i) in historyList" :key="i">
+          {{ i + 1 }}. {{ item }}
+        </li>
+      </ul>
     </div>
 
     <!-- Throttled Input -->
