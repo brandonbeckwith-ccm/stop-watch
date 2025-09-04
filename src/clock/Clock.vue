@@ -1,8 +1,10 @@
 <script setup lang="ts">
 import { CButton } from '@ccm-engineering/ui-components';
 import router from '../router';
-import { computed } from 'vue';
+import { computed, onMounted } from 'vue';
 import { useRoute } from 'vue-router';
+import { useNavigation } from '../composables/useNavigation';
+const { title, icon, status } = useNavigation();
 
 const goTo = (path: string) => {
   router.push(path);
@@ -10,6 +12,12 @@ const goTo = (path: string) => {
 const route = useRoute()
 const isStopWatch= computed(() => route.path.includes("stopwatch"))
 const isWorldClock = computed(() => route.path.includes("world"))
+onMounted(() => {
+  title.value = "Stopwatch";
+  icon.value = "⏱️";
+  status.value = "";
+});
+
 </script>
 
 <template>

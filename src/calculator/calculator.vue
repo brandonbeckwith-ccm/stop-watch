@@ -1,5 +1,15 @@
 <script setup lang="ts">
+import { onMounted } from "vue";
+import { useNavigation } from "../composables/useNavigation";
 import { buttons, expression, history, press, result } from "../helpers/calculator";
+
+const { title, icon, status } = useNavigation();
+
+onMounted(() => {
+  title.value = "Calculator";
+  icon.value = "📟";
+  status.value = "";
+});
 </script>
 
 <template>

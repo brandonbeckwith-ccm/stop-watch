@@ -1,6 +1,7 @@
 <script setup lang="ts">
-import { ref, computed } from 'vue'
+import { ref, computed, onMounted } from 'vue'
 import { useDebouncedValidatedRef } from './debouncedWithValidationCustomRef'
+import { useNavigation } from "../composables/useNavigation";
 
 const bigList = ref(['apple', 'banana', 'grapes', 'orange', 'mango'])
 
@@ -13,6 +14,14 @@ const filteredList = computed(() =>
       )
     : bigList.value
 )
+
+const { title, icon, status } = useNavigation();
+
+onMounted(() => {
+  title.value = "Custom Ref";
+  icon.value = "📐";
+  status.value = '';
+});
 </script>
 
 <template>

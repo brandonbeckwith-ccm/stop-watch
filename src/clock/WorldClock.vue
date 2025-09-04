@@ -2,9 +2,22 @@
 import { CButton, CMultipleSelect } from "@ccm-engineering/ui-components";
 import { useWorldClock } from "../helpers/clock";
 import Clock from "../../src/clock/ClockDial.vue";
-
+import { onMounted, watch } from "vue";
+import { useNavigation } from "../composables/useNavigation";
 const { timeZones, selectedTimeZone, addClock, clocks, removeClock } =
   useWorldClock();
+
+const { title, icon, status } = useNavigation();
+
+onMounted(() => {
+  title.value = "World Clock";
+  icon.value = "🌍";
+});
+
+watch(clocks, (newClocks) => {
+  status.value = newClocks.length ? newClocks.length.toString() : "0";
+}, { deep: true, immediate: true });
+  
 </script>
 
 <template>

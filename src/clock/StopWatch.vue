@@ -1,13 +1,47 @@
-<script lang="ts" setup>
+<script setup lang="ts">
+import { onMounted, onBeforeUnmount, watch } from "vue";
+import { useNavigation } from "../composables/useNavigation";
+
 import { useStopwatch } from "../helpers/clock";
 import { CButton, CTag } from "@ccm-engineering/ui-components";
 
 const { formattedTime, start, stop, reset, isRunning, lap, laps } =
   useStopwatch();
+
+
+function handleStart() {
+  start();
+  status.value = formattedTime.value;
+}
+
+function handleReset() {
+  reset();
+  status.value = "";
+}
+
+const { title, icon, status } = useNavigation();
+
+let intervalId: number | undefined;
+
+onMounted(() => {
+  title.value = "Stopwatch";
+  icon.value = "⏱️";
+  status.value = "";
+});
+
+watch(formattedTime, (newTime) => {
+  if (isRunning.value) {
+    status.value = newTime;
+  }
+});
+
+onBeforeUnmount(() => {
+  if (intervalId) clearInterval(intervalId);
+});
 </script>
 
 <template>
-  <div class="main-container">
+   <div class="main-container">
     <div class="card stopwatch-card">
       <h2 class="title">Stopwatch</h2>
       <div class="time-display">
@@ -18,7 +52,7 @@ const { formattedTime, start, stop, reset, isRunning, lap, laps } =
           v-if="!isRunning"
           radius="xs"
           label="Start"
-          @click="start"
+          @click="handleStart"
           icon-class="fal fa-play"
           iconPosition="left"
           type="border"
@@ -44,7 +78,7 @@ const { formattedTime, start, stop, reset, isRunning, lap, laps } =
         <CButton
           radius="xs"
           label="Reset"
-          @click="reset"
+          @click="handleReset"
           :disable="isRunning"
           type="border"
           icon-class="fa fa-refresh"
@@ -75,7 +109,6 @@ const { formattedTime, start, stop, reset, isRunning, lap, laps } =
     </div>
   </div>
 </template>
-
 <style>
 .main-container {
   display: flex;
