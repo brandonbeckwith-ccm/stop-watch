@@ -1,15 +1,25 @@
 <script setup lang="ts">
+import { onMounted } from "vue";
 import {
   useDebouncedRef,
   useValidatedRef,
   useHistoryRef,
   useThrottledRef,
 } from "../helper/customRef";
+import { useNavigation } from "../Composables/useNavigation";
+
+const nav = useNavigation();
 
 const debouncedInput = useDebouncedRef("", 500);
 const validatedInput = useValidatedRef("", (v) => v.length >= 4);
 const historyInput = useHistoryRef("", 5);
 const throttledInput = useThrottledRef("", 2000);
+
+onMounted(() => {
+  nav.setTitle("Custom Ref");
+  nav.setIcon("");
+  nav.setStatus("");
+});
 </script>
 
 <template>

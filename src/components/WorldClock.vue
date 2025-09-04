@@ -1,15 +1,17 @@
 <script lang="ts" setup>
-import { ref, onMounted } from "vue";
+import { ref, onMounted, watch } from "vue";
 import dayjs from "dayjs";
 import utc from "dayjs/plugin/utc";
 import timezone from "dayjs/plugin/timezone";
 import { useLocalStorage } from "@vueuse/core";
 import { useIntervalFn } from "@vueuse/core";
 import { CButton, CInput } from "@ccm-engineering/ui-components";
+import { useNavigation } from "../Composables/useNavigation";
 
 dayjs.extend(utc);
 dayjs.extend(timezone);
-dayjs.extend(timezone);
+
+const nav = useNavigation();
 
 const defaultTimezones = [
   { label: "Local Time", value: "local" },
@@ -57,7 +59,17 @@ const updateTimes = () => {
 };
 
 useIntervalFn(updateTimes, 1000);
-onMounted(updateTimes);
+
+watch(clocks, (val) => {
+  nav.setStatus(`${val.length} clocks`);
+});
+
+onMounted(() => {
+  nav.setTitle("World Clocks");
+  nav.setIcon("fal fa-clock");
+  nav.setStatus(`${clocks.value.length} clocks`);
+  updateTimes();
+});
 </script>
 
 <template>

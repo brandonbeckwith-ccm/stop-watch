@@ -1,6 +1,9 @@
 <script setup lang="ts">
 import { CButton, CTag } from "@ccm-engineering/ui-components";
-import { computed, ref } from "vue";
+import { computed, ref, watch, onMounted } from "vue";
+import { useNavigation } from "../Composables/useNavigation";
+
+const nav = useNavigation();
 
 const minutes = ref<number>(0);
 const seconds = ref<number>(0);
@@ -14,6 +17,16 @@ const currentTime = computed(() => {
   return `${pad(minutes.value)}:${pad(seconds.value)}:${pad(
     Math.floor(milliseconds.value / 10)
   )}`;
+});
+
+watch(currentTime, (val) => {
+  nav.setStatus(val);
+});
+
+onMounted(() => {
+  nav.setTitle("Stopwatch");
+  nav.setIcon("fal fa-stopwatch");
+  nav.setStatus(currentTime.value);
 });
 
 const start = (): void => {
