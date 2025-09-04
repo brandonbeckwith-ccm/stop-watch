@@ -1,14 +1,15 @@
 <script setup lang="ts">
-import Navigation from "./constants/Navigation.vue";
 
+import { useRoute } from "vue-router";
+import { provideNavigation } from "./composables/useNavigation";
+import Navigation from "./constants/Navigation.vue";
+const route = useRoute();
+provideNavigation(route);
 </script>
 
 <template>
   <div id="app">
     <Navigation />
     <RouterView></RouterView>
-
   </div>
 </template>
-
-<style></style>

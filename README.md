@@ -1,48 +1,91 @@
-# Day 2: Git Merge Practice & Feature Development
+# Day 3.5: Advanced Vue Features & Reactive Navigation
 
-## Task 1: Git Conflict Resolution
+## Task 1: Category-Based Navigation
 
-Find your assigned PR (one of PRs #15-26) where someone else's branch merges into your `-merge-practice` branch.
-
-**Your options for resolving conflicts:**
-- **Merge commit**: Standard merge with merge commit
-- **Rebase**: Replay commits to create linear history  
-- **Squash merge**: Combine all commits into single commit
-
-Resolve the conflicts and complete the merge using your chosen strategy.
-
-## Task 2: Navigation Menu
-
-Rebase your day-2 branch from master and then add a navigation menu to your application. 
+Update the navigation to support categories. Move the clock-related pages under a Clock category.
 
 **Requirements:**
-- Must function as navigation (routing between views/sections)
-- Implementation approach is flexible (tabs, sidebar, header nav, etc.)
-- Must be responsive
 
-Commit and push your changes.
+- Organize existing clock functionality under a "Clock" category
+- Implement nested/grouped navigation structure
+- Maintain responsive design
 
-## Task 3: World Clock Feature
+## Task 2: Calculator Application
 
-Add configurable world clocks that display current times in different timezones.
+Create a new calculator page supporting basic mathematical operations.
 
 **Requirements:**
-- **Default clocks:** User's local time (browser timezone), EST, and your current physical location timezone
-- Users can add and remove additional clocks
-- Clock preferences persist between page visits (use localStorage)
 
-**Required setup:**
+- Support division, multiplication, addition, subtraction, and parentheses
+- Use Windows calculator as a design reference
+- Support both GUI button clicks and keyboard input (Google calculator style)
+- Implement calculation history with ability to restore previous calculations
+- Display current calculation and result clearly
+
+**Mathematical Operations:**
+
+- Basic arithmetic: +, -, ×, ÷
+- Parentheses for order of operations
+- Clear/reset functionality
+- Error handling for invalid operations
+
+## Task 3: Reactive Navigation Bar with Provide/Inject
+
+Create a reactive navigation bar system that dynamically updates based on the current page using Vue's provide/inject pattern.
+
+**Requirements:**
+
+- Create an injectable navigation service/composable that provides:
+  - Page title management
+  - Page icon management
+  - Status information display
+- Implement a reactive navigation bar component that:
+  - Shows current page title and icon
+  - Displays contextual status information
+  - Updates automatically when navigating between pages
+- Update existing components to use the injected service:
+  - **Clock pages**: Show timer count as status
+  - **Calculator page**: Show current calculation result as status
+  - **Other pages**: Show relevant contextual information
+
+**Technical Implementation:**
+
+- Use Vue 3's `provide`/`inject` composition API
+- Create a composable (e.g., `useNavigation`) for the injectable service
+- Implement reactive refs for title, icon, and status
+- Ensure the navigation bar updates immediately on page load and navigation
+
+## Task 4: Vue Reactivity Research
+
+Update this README with your findings on Vue reactivity patterns found in real-world applications.
+
+**Research Focus:**
+
+- Document examples of different types of refs, computeds, and reactives
+- Find patterns in open-source Vue projects
+- Identify common use cases and best practices
+- Note any interesting or unexpected implementations
+
+**Deliverable:** Add a new section below with your research findings, including:
+
+- Code examples (with source attribution)
+- Use case descriptions
+- Personal observations or insights
+
+## Getting Started
+
+Continue working on your existing day-3 branch (or create one from day-2 if you haven't started day-3):
+
 ```bash
-npm install @vueuse/core dayjs
+git checkout feature/yourname-day-3  # or create from day-2: git checkout -b feature/yourname-day-3 feature/yourname-day-2
+git pull origin feature/yourname-day-3
 ```
 
-You're encouraged to use these libraries but not required to.
-
-Commit and push your changes.
+Complete Tasks 1, 2, and 3, committing and pushing your changes as you go.
 
 ## Final Step
 
-Once you've completed Tasks 2 and 3, raise a new PR from your `-day-2` branch against your original Day 1 branch (e.g., `feature/yourname-day-2` → `feature/yourname`). Take a moment to reflect and comment any observations or things you wish you did differently.
+Once you've completed all tasks, raise a new PR from your `-day-3` branch against your day-2 branch (e.g., `feature/yourname-day-3` → `feature/yourname-day-2`). Include your Task 4 research findings in the PR description or as commits to this README.
 
 ## Development Setup
 
