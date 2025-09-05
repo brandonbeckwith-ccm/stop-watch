@@ -4,10 +4,10 @@ export type HistoryItem = {
     expression: string;
     result: number;
 }
+export const result = ref<string | number>('');
 
 export const useCalculator = () => {
     const expression = ref<string>('');
-    const result = ref<string | number>('');
     const error = ref<boolean>(false);
     const history = ref<HistoryItem[]>([]);
 
@@ -58,7 +58,7 @@ export const useCalculator = () => {
     });
 
     onBeforeUnmount(() => {
-      window.removeEventListener("keydown", handleKey);
+        window.removeEventListener("keydown", handleKey);
     });
 
     return {

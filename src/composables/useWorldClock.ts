@@ -12,6 +12,8 @@ export type CityGroup = {
     citySort: Clock[]
 }
 
+export const statusClock = ref(dayjs().format("hh:mm A"))
+
 export const useWorldClock = () => {
     const list = useStorage<Clock[]>('world-clocks', [
         { id: 224, city: "Mumbai" },

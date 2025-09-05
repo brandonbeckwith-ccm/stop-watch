@@ -5,6 +5,8 @@ export type Lap = {
     timeString: string
 }
 
+export const stopwatch = ref<string>('00:00:00')
+
 export const useStopWatch = () => {
     const time = ref<number>(0);
     const interval = ref<number>(0);
@@ -16,7 +18,8 @@ export const useStopWatch = () => {
         const totalSeconds = Math.floor(time.value / 1000);
         const seconds = (totalSeconds % 60).toString().padStart(2, '0');
         const minutes = Math.floor(totalSeconds / 60).toString().padStart(2, '0');
-
+        stopwatch.value = `${minutes} : ${seconds} : ${ms}`
+        
         return `${minutes} : ${seconds} : ${ms}`;
     });
 

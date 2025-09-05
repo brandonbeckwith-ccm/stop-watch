@@ -1,7 +1,8 @@
 import { createRouter, createWebHistory } from 'vue-router'
-import Home from '../pages/Home.vue'
 import Stopwatch from '../pages/Stopwatch.vue'
 import Calculator from '../pages/Calculator.vue'
+import Welcome from '../pages/Welcome.vue'
+
 
 
 const router = createRouter({
@@ -9,22 +10,22 @@ const router = createRouter({
   routes: [
     {
       path: '/',
-      name : 'home',
-      component : Home
+      name : 'Home',
+      component : Welcome
     },
     {
       path: '/clocks',
-      name : 'clocks',
+      name : 'Clocks',
       component : () => import('../pages/Clocks.vue')
     },
     {
       path: '/stopwatch',
-      name : 'stopwatch',
+      name : 'Stopwatch',
       component : Stopwatch
     },
     {
       path: '/calculator',
-      name : 'calculator',
+      name : 'Calculator',
       component : Calculator
     },
   ],
