@@ -4,6 +4,7 @@ import utc from 'dayjs/plugin/utc'
 import timezone from 'dayjs/plugin/timezone'
 import { onMounted, ref, watch } from 'vue'
 import { CButton, CInput } from '@ccm-engineering/ui-components'
+import { useNavigation } from '../composables/useNavigation'
 
 dayjs.extend(utc)
 dayjs.extend(timezone)
@@ -22,6 +23,11 @@ const now = ref(dayjs())
 const error = ref('')
 
 let timer: number | undefined
+
+const { setTitle, setIcon, setStatus } = useNavigation()
+setTitle('World Clock')
+setIcon('🌍')
+watch(clocks, () => setStatus(`Clocks: ${clocks.value.length}`), { immediate: true })
 
 const isValidTimezone = (tz: string) => {
     try {
@@ -98,6 +104,7 @@ watch(clocks, saveClocks, { deep: true })
     flex-wrap: wrap;
     gap: 16px;
     margin-bottom: 24px;
+    margin-top: 10px;
 }
 
 .clock {

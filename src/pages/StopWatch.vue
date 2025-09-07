@@ -1,18 +1,25 @@
 <script setup lang="ts">
-import { computed } from 'vue'
+import { computed, watch } from 'vue'
 import { CButton } from '@ccm-engineering/ui-components'
 import { useStopwatch } from '../helpers/stopwatch'
 import Table from '../components/Table.vue'
-const { formatTime, isRunning, lap, reset, start, stop, time } = useStopwatch();
+import { useNavigation } from '../composables/useNavigation'
+
+const { formatTime, isRunning, lap, reset, start, stop, time } = useStopwatch()
 const toggleLabel = computed(() => (isRunning.value ? 'Stop' : 'Start'))
 const toggleAction = () => { isRunning.value ? stop() : start() }
+
+const { setTitle, setIcon, setStatus } = useNavigation()
+setTitle('Stopwatch')
+setIcon('⏱️')
+watch(time, () => setStatus(formatTime(time.value)), { immediate: true })
 </script>
 
 <template>
     <div class="outer">
         <div class="wrapper">
             <div class="box has-background-light left">
-                <h1 class="is-size-1 has-text-weight-bold">
+                <h1>
                     {{ formatTime(time) }}
                 </h1>
                 <div class="buttons-wrapper">
@@ -21,8 +28,8 @@ const toggleAction = () => { isRunning.value ? stop() : start() }
                     <CButton label="Reset" @clicked="reset" radius="xxs" />
                 </div>
             </div>
+            <Table></Table>
         </div>
-        <Table></Table>
     </div>
 </template>
 
@@ -43,9 +50,14 @@ const toggleAction = () => { isRunning.value ? stop() : start() }
     border-radius: 15px;
 }
 
+h1 {
+    text-align: center;
+}
+
 .buttons-wrapper {
     display: flex;
     gap: 10px;
+    justify-content: center;
 }
 
 @media (max-width: 900px) {

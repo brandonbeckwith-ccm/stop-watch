@@ -1,7 +1,8 @@
 <script setup lang="ts">
+import NavBar from './components/NavBar.vue'
+import { createNavigation } from './composables/useNavigation'
 
-import NavBar from './components/NavBar.vue';
-
+createNavigation()
 </script>
 
 <template>
