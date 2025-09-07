@@ -10,7 +10,7 @@ const throttled = throttledRef('', 1000)
 </script>
 
 <template>
-    <div class="container" style="margin-top:40px;">
+    <div class="container">
         <div class="flex">
             <div class="card">
                 <h3>Validation Ref</h3>

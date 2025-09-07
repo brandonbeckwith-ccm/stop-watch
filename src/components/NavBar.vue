@@ -1,24 +1,26 @@
 <script setup lang="ts">
-import { CButton } from '@ccm-engineering/ui-components';
+import { useNavigation } from '../composables/useNavigation'
+import { CButton } from '@ccm-engineering/ui-components'
 import { ref } from 'vue'
 
 const menuOpen = ref(false)
 const closeMenu = () => (menuOpen.value = false)
+
+const { title, icon, status } = useNavigation()
 </script>
 
 <template>
   <header class="navbar">
-    <h1 class="logo">
-      <RouterLink to="/" @click="closeMenu">My App</RouterLink>
-    </h1>
-    
+    <div class="nav-info">
+      <span v-if="icon" class="nav-icon" v-html="icon"></span>
+      <span class="nav-title">{{ title }}</span>
+      <span v-if="status" class="nav-status">{{ status }}</span>
+    </div>
     <div class="menu-btn">
       <CButton @clicked="menuOpen = !menuOpen" label="☰" radius="xs" />
     </div>
-    
     <nav :class="['menu', { open: menuOpen }]">
-      <RouterLink to="/" class="menu-link" @click="closeMenu">Stopwatch</RouterLink>
-      <RouterLink to="/world-clock" class="menu-link" @click="closeMenu">World Clock</RouterLink>
+      <RouterLink to="/clock" class="menu-link" @click="closeMenu">Clock</RouterLink>
       <RouterLink to="/custom-ref-demo" class="menu-link" @click="closeMenu">CustomRef Demo</RouterLink>
       <RouterLink to="/calculator" class="menu-link" @click="closeMenu">Calculator</RouterLink>
     </nav>
@@ -93,6 +95,24 @@ const closeMenu = () => (menuOpen.value = false)
     background: grey;
     color: white;
   }
+}
+
+.nav-info {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+.nav-title {
+  font-size: 1.3rem;
+  font-weight: bold;
+}
+.nav-icon {
+  font-size: 1.5rem;
+}
+.nav-status {
+  font-size: 1rem;
+  color: #1976d2;
+  margin-left: 8px;
 }
 
 // Mobile responsive
