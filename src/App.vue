@@ -1,5 +1,24 @@
 <script setup lang="ts">
+import { ref, onMounted, onUnmounted } from 'vue'
+import { useNavigationProvider } from './composables/useNavigation'
 import Sidebar from './components/Sidebar.vue'
+
+useNavigationProvider()
+
+const isMobile = ref(false)
+
+const checkMobile = () => {
+  isMobile.value = window.innerWidth < 768
+}
+
+onMounted(() => {
+  checkMobile()
+  window.addEventListener('resize', checkMobile)
+})
+
+onUnmounted(() => {
+  window.removeEventListener('resize', checkMobile)
+})
 </script>
 
 <template>

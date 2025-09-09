@@ -1,7 +1,10 @@
 <script setup lang="ts">
 import { CButton, CTag } from '@ccm-engineering/ui-components'
 import { useStopwatch } from '../composables/useStopwatch'
+import { onMounted } from 'vue'
+import { useNavigation } from '../composables/useNavigation'
 
+const { setPageInfo, setStatus } = useNavigation()
 const {
   isRunning,
   formattedTime,
@@ -10,6 +13,36 @@ const {
   lap,
   toggle
 } = useStopwatch()
+
+onMounted(() => {
+  setPageInfo({
+    title: 'Stopwatch',
+    icon: '⏱️',
+    status: 'Track time precisely with laps',
+    statusType: 'info'
+  })
+})
+
+const handleStart = () => {
+  toggle()
+  setStatus('Stopwatch started ⏱️', 'success')
+}
+
+const handleStop = () => {
+  toggle()
+  setStatus('Stopwatch stopped ✋', 'warning')
+}
+
+const handleReset = () => {
+  reset()
+  setStatus('Stopwatch reset 🔄', 'info')
+}
+
+const handleLap = () => {
+  lap()
+  setStatus(`Lap ${lapTimes.value[0].displayTime} recorded 🏁`, 'success')
+  
+}
 </script>
 
 <template>
@@ -26,7 +59,7 @@ const {
       <CButton 
         :theme="isRunning ? 'neutral' : 'primary'"
         :label="isRunning ? 'Stop' : 'Start'"
-        @clicked="toggle"
+        @clicked="isRunning ? handleStop() : handleStart()"
         class="control-button"
       />
       
@@ -34,7 +67,7 @@ const {
         theme="neutral"
         label="Reset"
         :disabled="isRunning && lapTimes.length === 0"
-        @clicked="reset"
+        @clicked="handleReset"
         class="control-button"
       />
       
@@ -42,7 +75,7 @@ const {
         theme="primary"
         label="Lap"
         :disabled="!isRunning"
-        @clicked="lap"
+        @clicked="handleLap"
         class="control-button"
       />
     </div>

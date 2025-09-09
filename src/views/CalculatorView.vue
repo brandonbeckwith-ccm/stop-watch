@@ -2,6 +2,9 @@
 import { onMounted, onUnmounted } from 'vue'
 import { CButton } from '@ccm-engineering/ui-components'
 import { useCalculator } from '../composables/useCalculator'
+import { useNavigation } from '../composables/useNavigation'
+
+const { setPageInfo, setStatus } = useNavigation()
 
 const {
   expression,
@@ -21,9 +24,26 @@ onMounted(() => {
   setupKeyboardListeners()
 })
 
+onMounted(() => {
+  setPageInfo({
+    title: 'Calculator',
+    icon: '🧮',
+    status: 'Ready for calculation',
+    statusType: 'info'
+  })
+})
+
 onUnmounted(() => {
   cleanupKeyboardListeners()
 })
+
+const handleCalculate = () => {
+  calculate()
+  const last = history.value[0] 
+  if (last) {
+    setStatus(`Result: ${last.result}`, 'success')
+  }
+}
 </script>
 
 <template>
@@ -85,7 +105,7 @@ onUnmounted(() => {
 
         <CButton @clicked="addToExpression('.')" theme="neutral" label="." class="btn btn-number" />
         <CButton @clicked="addToExpression('0')" theme="neutral" label="0" class="btn btn-number" />
-        <CButton @clicked="calculate" theme="primary" label="=" class="btn btn-equals" />
+        <CButton @clicked="handleCalculate" theme="primary" label="=" class="btn btn-equals" />
         <CButton @clicked="addToExpression('+')" theme="neutral" label="+" class="btn btn-operator" />
       </div>
     </div>
