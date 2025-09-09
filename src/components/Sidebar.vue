@@ -1,31 +1,42 @@
 <script setup lang="ts">
-import { ref, computed } from 'vue'
+import { ref, onMounted, onUnmounted } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
+import { useNavigation } from '../composables/useNavigation'
 
+const { currentPage } = useNavigation()
 const route = useRoute()
 const router = useRouter()
 
-const expanded = ref(new Set(['clock']))
+const isCollapsed = ref(false)          
+const isMobileMenuOpen = ref(false)     
+const isMobile = ref(false)           
 
 const nav = [
   { name: 'Home', path: '/', icon: '🏠' },
-  {
-    name: 'Clock',
-    icon: '⏰',
-    items: [
-      { name: 'Stopwatch', path: '/stopwatch', icon: '⏱️' },
-      { name: 'World Clock', path: '/world-clock', icon: '🌍' },
-    ]
-  },
+  { name: 'Stopwatch', path: '/stopwatch', icon: '⏱️' },
+  { name: 'World Clock', path: '/world-clock', icon: '🌍' },
   { name: 'Calculator', path: '/calculator', icon: '🧮' },
 ]
 
 const isActive = (path: string) => route.path === path
-const isExpanded = (name: string) => expanded.value.has(name)
-const toggle = (name: string) => {
-  expanded.value.has(name) ? expanded.value.delete(name) : expanded.value.add(name)
+const checkMobile = () => {
+  isMobile.value = window.innerWidth < 768
+  if (isMobile.value) {
+    isCollapsed.value = false
+    isMobileMenuOpen.value = false
+  }
 }
+
+onMounted(() => {
+  checkMobile()
+  window.addEventListener('resize', checkMobile)
+})
+
+onUnmounted(() => {
+  window.removeEventListener('resize', checkMobile)
+})
 </script>
+
 
 <template>
   <aside class="sidebar">
@@ -33,45 +44,32 @@ const toggle = (name: string) => {
       <span>⏱️</span>
       <span>TimeApp</span>
     </div>
-
-    <nav class="nav">
-      <div v-for="item in nav" :key="item.name">
-        <!-- Regular item -->
-        <div 
-          v-if="!item.items"
-          class="item"
-          :class="{ active: isActive(item.path) }"
-          @click="router.push(item.path)"
-        >
-          <span>{{ item.icon }}</span>
-          <span>{{ item.name }}</span>
-        </div>
-
-        <!-- Category -->
-        <div v-else class="category">
-          <div 
-            class="header"
-            :class="{ active: item.items.some(i => isActive(i.path)) }"
-            @click="toggle(item.name)"
-          >
-            <span>{{ item.icon }}</span>
-            <span>{{ item.name }}</span>
-            <span :class="{ expanded: isExpanded(item.name) }">▼</span>
+     <div class="page-info">
+          <div class="page-icon">
+            {{ currentPage.icon }}
           </div>
-          
-          <div v-if="isExpanded(item.name)" class="items">
+          <div v-if="!isCollapsed" class="page-details">
+            <h1 class="page-title">{{ currentPage.title }}</h1>
             <div 
-              v-for="sub in item.items"
-              :key="sub.path"
-              class="item sub"
-              :class="{ active: isActive(sub.path) }"
-              @click="router.push(sub.path)"
+              v-if="currentPage.status" 
+              class="page-status"
+              :class="`status-${currentPage.statusType || 'info'}`"
             >
-              <span>{{ sub.icon }}</span>
-              <span>{{ sub.name }}</span>
+              <span class="status-indicator"></span>
+              {{ currentPage.status }}
             </div>
           </div>
         </div>
+       <nav class="nav">
+      <div 
+        v-for="item in nav" 
+        :key="item.name"
+        class="item"
+        :class="{ active: isActive(item.path) }"
+        @click="router.push(item.path)"
+      >
+        <span>{{ item.icon }}</span>
+        <span>{{ item.name }}</span>
       </div>
     </nav>
   </aside>
@@ -105,6 +103,91 @@ const toggle = (name: string) => {
   color: var(--ccm-color-primary);
 }
 
+.page-info {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  margin-top: 3rem;
+  margin-bottom: 2rem;
+  padding: 1rem;
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 12px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.page-icon {
+  font-size: 2.5rem;
+  width: 3.5rem;
+  height: 3.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(135deg, #3b82f6, #6366f1);
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3);
+  flex-shrink: 0;
+  transition: all 0.3s ease;
+}
+
+.sidebar-collapsed .page-icon {
+  width: 3rem;
+  height: 3rem;
+  font-size: 2rem;
+}
+
+.page-details {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  min-width: 0;
+  flex: 1;
+}
+
+.page-title {
+  font-size: 1.25rem;
+  font-weight: 700;
+  /* color: #f8fafc; */
+  margin: 0;
+  line-height: 1.2;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.page-status {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.75rem;
+  font-weight: 500;
+  padding: 0.375rem 0.75rem;
+  border-radius: 16px;
+  transition: all 0.2s ease;
+  max-width: fit-content;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.status-indicator {
+  width: 0.375rem;
+  height: 0.375rem;
+  border-radius: 50%;
+  animation: pulse 2s infinite;
+  flex-shrink: 0;
+}
+
+.status-info {
+  background-color: rgba(59, 130, 246, 0.2);
+  color: #93c5fd;
+  border: 1px solid rgba(59, 130, 246, 0.3);
+}
+
+.status-info .status-indicator {
+  background-color: #3b82f6;
+}
+
+
 .nav {
   flex: 1;
   padding: 0.5rem 0;
@@ -125,12 +208,6 @@ const toggle = (name: string) => {
   background: var(--ccm-color-surface-hover);
   color: var(--ccm-color-text-primary);
   border-left-color: var(--ccm-color-primary);
-}
-
-.item.active {
-  background: var(--ccm-color-primary);
-  color: white;
-  border-left-color: white;
 }
 
 .category .header {

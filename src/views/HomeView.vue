@@ -1,7 +1,10 @@
 <script setup lang="ts">
+import { onMounted } from 'vue'
 import { useRouter } from 'vue-router'
 import { CButton } from '@ccm-engineering/ui-components'
+import { useNavigation } from '../composables/useNavigation'
 
+const { setPageInfo } = useNavigation()
 const router = useRouter()
 
 const features = [
@@ -9,6 +12,14 @@ const features = [
   { title: 'World Clock', description: 'See times across timezones', icon: '🌍', route: '/world-clock' },
   { title: 'Calculator', description: 'Basic mathematical operations ', icon: '🧮', route: '/calculator' },
 ]
+onMounted(() => {
+  setPageInfo({
+    title: 'Home',
+    icon: '🏠',
+    status: 'Welcome to the application',
+    statusType: 'info'
+  })
+})
 </script>
 
 <template>

@@ -1,8 +1,10 @@
 <script setup lang="ts">
-import { ref } from 'vue'
+import { ref, onMounted } from 'vue'
 import { CButton } from '@ccm-engineering/ui-components'
 import { useWorldClocks } from '../composables/useWorldClocks'
+import { useNavigation } from '../composables/useNavigation'
 
+const { setPageInfo, setStatus } = useNavigation()
 const { clocks, formattedNow, addClock, removeClock, resetDefaults, popularTimezones } = useWorldClocks()
 
 const tzError = ref('')
@@ -12,11 +14,32 @@ const quickAdd = (tz: string, label?: string) => {
   // prevent duplicate timezone entries
   if (clocks.value.some(c => c.tz === tz)) {
     tzError.value = 'Clock already added'
+    setStatus(`❌ ${label || tz} already exists`, 'error')
     return
   }
+
   const err = addClock(tz, label)
-  if (err) tzError.value = err
+  if (err) {
+    tzError.value = err
+    setStatus(`⚠️ Failed to add ${label || tz}: ${err}`, 'warning')
+  } else {
+    setStatus(`✅ Added ${label || tz}`, 'success')
+  }
 }
+
+const handleRemove = (id: string, label: string) => {
+  removeClock(id)
+  setStatus(`🗑️ Removed ${label}`, 'info')
+}
+
+onMounted(() => {
+  setPageInfo({
+    title: 'World Clock',
+    icon: '🌍',
+    status: 'See times across timezones',
+    statusType: 'info'
+  })
+})
 </script>
 
 <template>
@@ -53,7 +76,7 @@ const quickAdd = (tz: string, label?: string) => {
               <div class="subtle">{{ c.tz }}</div>
             </div>
           </div>
-          <button class="icon-btn" title="Remove" @click="removeClock(c.id)">✕</button>
+          <button class="icon-btn" title="Remove" @click="handleRemove(c.id, c.label)">✕</button>
         </div>
         <div class="time">{{ formattedNow(c.tz) }}</div>
       </div>
